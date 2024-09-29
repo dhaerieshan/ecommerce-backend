@@ -2,6 +2,8 @@ package com.borneo.ecommerce.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import java.time.LocalDate;
+
 
 
 @Entity
@@ -21,4 +23,13 @@ public class User {
 
     @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
+    private String firstname;
+
+    @Column(nullable = false)
+    private String lastname;
+
+    @Column(nullable = false)
+    private LocalDate dateOfBirth;
 }
