@@ -18,12 +18,13 @@ public class EcommerceApplication {
 	}
 
 	@Bean
-	public CommandLineRunner demoData(UserRepository userRepository,PasswordEncoder passwordEncoder ) {
+	public CommandLineRunner demoData(UserRepository userRepository,PasswordEncoder passwordEncoder,RoleRepository roleRepository) {
 		return args -> {
 			User user = new User();
 			user.setUsername("testuser");
 			user.setPassword("testPass");
 			user.setEmail("testgmail.com");
+
 
 			user.setPassword(passwordEncoder.encode("testpass"));
 			userRepository.save(user);
