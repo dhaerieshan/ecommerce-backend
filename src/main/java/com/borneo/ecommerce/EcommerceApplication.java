@@ -1,6 +1,7 @@
 package com.borneo.ecommerce;
 
 import com.borneo.ecommerce.model.User;
+import com.borneo.ecommerce.model.Role;
 import com.borneo.ecommerce.repository.UserRepository;
 import com.borneo.ecommerce.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,16 +21,16 @@ public class EcommerceApplication {
 	@Bean
 	public CommandLineRunner demoData(UserRepository userRepository,PasswordEncoder passwordEncoder,RoleRepository roleRepository) {
 		return args -> {
-			User user = new User();
-			user.setUsername("testuser");
-			user.setPassword("testPass");
-			user.setEmail("testgmail.com");
 
+			String[] roleNames = {"USER", "ADMIN", "VENDOR"};
 
-			user.setPassword(passwordEncoder.encode("testpass"));
-			userRepository.save(user);
-
-			userRepository.findAll().forEach(System.out::println);
+			for (String roleName : roleNames) {
+				if (roleRepository.findByName(roleName) == null){
+					Role role = new Role();
+					role.setName(roleName);
+					roleRepository.save(role);
+				}
+			}
 		};
 	}
 }
