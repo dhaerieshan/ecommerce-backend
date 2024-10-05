@@ -1,28 +1,29 @@
 package com.borneo.ecommerce.controller;
 
-import com.borneo.ecommerce.dto.SignupRequest;
 import com.borneo.ecommerce.dto.LoginRequest;
-import com.borneo.ecommerce.security.JwtUtils;
-import com.borneo.ecommerce.model.User;
+import com.borneo.ecommerce.dto.SignupRequest;
 import com.borneo.ecommerce.model.Role;
-import com.borneo.ecommerce.repository.UserRepository;
+import com.borneo.ecommerce.model.User;
 import com.borneo.ecommerce.repository.RoleRepository;
+import com.borneo.ecommerce.repository.UserRepository;
+import com.borneo.ecommerce.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashSet;
 
 @RestController
 @RequestMapping("/api/auth")

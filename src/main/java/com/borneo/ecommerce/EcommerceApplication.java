@@ -1,14 +1,12 @@
 package com.borneo.ecommerce;
 
-import com.borneo.ecommerce.model.User;
 import com.borneo.ecommerce.model.Role;
-import com.borneo.ecommerce.repository.UserRepository;
 import com.borneo.ecommerce.repository.RoleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.borneo.ecommerce.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication

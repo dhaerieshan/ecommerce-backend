@@ -1,8 +1,8 @@
 package com.borneo.ecommerce.controller;
 
 import com.borneo.ecommerce.dto.UserUpdateRequest;
-import com.borneo.ecommerce.model.User;
 import com.borneo.ecommerce.model.Role;
+import com.borneo.ecommerce.model.User;
 import com.borneo.ecommerce.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
