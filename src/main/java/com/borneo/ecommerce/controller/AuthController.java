@@ -19,6 +19,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -67,7 +69,7 @@ public class AuthController {
             roles.add(userRole);
         }else{
             strRoles.forEach(role ->{
-                switch (role){
+                switch (role.toLowerCase()){
                     case "admin":
                         Role adminRole = roleRepository.findByName("ADMIN");
                         roles.add(adminRole);
@@ -97,8 +99,10 @@ public class AuthController {
 
         String jwt = jwtUtils.generateJwtToken(authentication.getName());
 
-        //String result =
-        return ResponseEntity.ok(jwt);
+        Map<String, Object> response = new HashMap<>();
+        response.put("token",jwt);
+        response.put("username", authentication.getName());
+        return ResponseEntity.ok(response);
 
     }
 }
