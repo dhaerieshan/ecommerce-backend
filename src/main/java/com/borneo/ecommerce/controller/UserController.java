@@ -35,6 +35,10 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @GetMapping("/dashboard")
+    public String adminDashboard(){
+        return "Welcome to the user Dashboard!";
+    }
     @GetMapping("/profile")
     public ResponseEntity<?> getUserProfile(Authentication authentication) {
         String username = authentication.getName();
@@ -72,4 +76,5 @@ public class UserController {
         userRepository.save(user);
         return ResponseEntity.ok("password changed successfully");
     }
+
 }

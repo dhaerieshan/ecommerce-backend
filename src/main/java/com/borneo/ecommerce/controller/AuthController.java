@@ -70,12 +70,12 @@ public class AuthController {
             roles.add(userRole);
         }else{
             strRoles.forEach(role ->{
-                switch (role.toLowerCase()){
-                    case "admin":
+                switch (role){
+                    case "ADMIN":
                         Role adminRole = roleRepository.findByName("ADMIN");
                         roles.add(adminRole);
                         break;
-                    case "vendor":
+                    case "VENDOR":
                         Role vendorRole = roleRepository.findByName("VENDOR");
                         roles.add(vendorRole);
                         break;

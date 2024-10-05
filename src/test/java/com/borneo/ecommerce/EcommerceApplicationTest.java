@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test") // Use a test profile if needed
+@ActiveProfiles("test")
 public class EcommerceApplicationTest {
 
 	@Autowired
@@ -123,4 +123,43 @@ public class EcommerceApplicationTest {
 				.andExpect(jsonPath("$.username").value("TestUsername1"))
 				.andExpect(jsonPath("$.email").value("TestEmail1@gmail.com"));
 	}
+	@Test
+	public void testAdminGetUsers() throws Exception{
+		SignupRequest signupRequest = new SignupRequest();
+		signupRequest.setUsername("Admin");
+		signupRequest.setPassword("admin");
+		signupRequest.setEmail("admin@gmail.com");
+		Set<String> roles = new HashSet<>();
+		roles.add("ADMIN");
+		signupRequest.setRoles(roles);
+
+		mockMvc.perform(post("/api/auth/signup")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(signupRequest)))
+				.andExpect(status().isOk());
+
+		LoginRequest loginRequest = new LoginRequest();
+		loginRequest.setUsername("Admin");
+		loginRequest.setPassword("admin");
+
+		MvcResult result = mockMvc.perform(post("/api/auth/signin")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(loginRequest)))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.token").exists())
+				.andReturn();
+
+		String responseContent = result.getResponse().getContentAsString();
+		token = objectMapper.readTree(responseContent).get("token").asText();
+
+		mockMvc.perform(get("/api/admin/userlist")
+						.header("Authorization", "BEARER " + token))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.users").isArray())
+				.andExpect(jsonPath("$.users.length()").value(1)) // Should be 1 user (admin)
+				.andExpect(jsonPath("$.users[0].username").value("Admin"))
+				.andExpect(jsonPath("$.users[0].email").value("admin@gmail.com"))
+				.andReturn();
+
 	}
+}
