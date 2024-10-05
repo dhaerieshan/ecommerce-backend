@@ -51,8 +51,8 @@ public class EcommerceApplicationTest {
 	@BeforeEach
 	public void setup() throws Exception {
 
-//		userRepository.deleteAll();
-//		roleRepository.deleteAll();
+		userRepository.deleteAll();
+		roleRepository.deleteAll();
 
 		Role userRole = new Role();
 		userRole.setName("USER");
