@@ -1,10 +1,10 @@
 package com.borneo.ecommerce.repository;
 
-import com.borneo.ecommerce.model.Role;
+import com.borneo.ecommerce.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role,Long> {
-    Role findByName(String name);
+public interface ProductRepository extends JpaRepository<Product, Long> {
+
 }
