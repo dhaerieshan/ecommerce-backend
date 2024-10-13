@@ -1,20 +1,22 @@
 package com.borneo.ecommerce.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.Setter;
 
 @Data
 public class UserUpdateRequest {
 
-    @NotBlank
-    private String username;
-    @NotBlank
-    private String oldPassword;
+    @Size(min = 3, max = 40)
+    private String username; // Optional if you allow username changes
 
-    @Setter
-    @NotBlank
-    private String newPassword;
+    @Email
+    private String email;
 
+    @Size(min = 8, max = 50)
+    private String password;
+
+    private String firstName;
+    private String lastName;
 
 }

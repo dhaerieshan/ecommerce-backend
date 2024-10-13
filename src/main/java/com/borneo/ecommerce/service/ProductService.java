@@ -1,4 +1,3 @@
-// src/main/java/com/borneo/ecommerce/service/ProductService.java
 
 package com.borneo.ecommerce.service;
 
@@ -17,22 +16,18 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    // Create a new product
     public Product createProduct(Product product) {
         return productRepository.save(product);
     }
 
-    // Get all products
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
-    // Get product by ID
-    public Optional<Product> getProductById(Long id) {
+    public Optional<Product> getProductById(long id) {
         return productRepository.findById(id);
     }
 
-    // Update product
     public Product updateProduct(Long id, Product productDetails) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found for this id :: " + id));
@@ -45,7 +40,6 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    // Delete product
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found for this id :: " + id));

@@ -1,14 +1,13 @@
 package com.borneo.ecommerce.controller;
 
+import com.borneo.ecommerce.dto.UserProfileResponse;
 import com.borneo.ecommerce.dto.UserUpdateRequest;
 import com.borneo.ecommerce.model.Role;
 import com.borneo.ecommerce.model.User;
 import com.borneo.ecommerce.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,9 +40,9 @@ public class UserController {
         return "Welcome to the user Dashboard!";
     }
     @GetMapping("/profile")
-    public ResponseEntity<?> getUserProfile(Authentication authentication) {
+    public ResponseEntity<?> getProfile(Authentication authentication) {
         String username = authentication.getName();
-        User user = userRepository.findByUsernameIgnoreCase(username);
+        User user = userRepository.findByUsername(username);
 
         if (user == null) {
             throw new UsernameNotFoundException("User Not found with Username: " + username);
@@ -57,24 +57,44 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/update")
-    public ResponseEntity<?> UserUpdate(@RequestBody UserUpdateRequest userUpdateRequest, Authentication authentication){
+    public ResponseEntity<?> UserUpdate(@RequestBody UserUpdateRequest updateRequest, Authentication authentication) {
         String username = authentication.getName();
+        User user = userRepository.findByUsername(username);
 
-        if (!username.equals(userUpdateRequest.getUsername())){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("YOU can change your password only lol");
+        if (updateRequest.getFirstName() != null) {
+            user.setFirstName(updateRequest.getFirstName());
         }
-        User user = userRepository.findByUsernameIgnoreCase(username);
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userUpdateRequest.getUsername(),userUpdateRequest.getOldPassword())
-            );
-        }catch (Exception e ){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Old password is incorrect.");
+        if (updateRequest.getLastName() != null) {
+            user.setLastName(updateRequest.getLastName());
         }
-        String encodedNewPassword = passwordEncoder.encode(userUpdateRequest.getNewPassword());
-        user.setPassword(encodedNewPassword);
+        if (updateRequest.getEmail() != null) {
+            // Check if email is already in use by another user
+            if (userRepository.existsByEmailAndUsernameNot(updateRequest.getEmail(), username)) {
+                return ResponseEntity.badRequest().body("Email is already in use by another account.");
+            }
+            user.setEmail(updateRequest.getEmail());
+        }
+        if (updateRequest.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(updateRequest.getPassword()));
+        }
+
         userRepository.save(user);
         return ResponseEntity.ok("password changed successfully");
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<?> getProfile(Principal principal) {
+        String username = principal.getName();
+        User user = userRepository.findByUsername(username);
+
+        // Map user entity to DTO if necessary
+        UserProfileResponse profile = new UserProfileResponse();
+        profile.setUsername(user.getUsername());
+        profile.setEmail(user.getEmail());
+        profile.setFirstName(user.getFirstName());
+        profile.setLastName(user.getLastName());
+        // ... other fields
+
+        return ResponseEntity.ok(profile);
+    }
 }

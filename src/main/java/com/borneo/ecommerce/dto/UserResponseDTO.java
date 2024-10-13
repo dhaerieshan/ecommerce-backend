@@ -10,7 +10,7 @@ import java.util.Set;
 public class UserResponseDTO {
 
     @NotBlank
-    private long id;
+    private Long id;
 
     @NotBlank
     private String username;
