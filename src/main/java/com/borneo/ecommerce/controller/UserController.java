@@ -68,7 +68,6 @@ public class UserController {
             user.setLastName(updateRequest.getLastName());
         }
         if (updateRequest.getEmail() != null) {
-            // Check if email is already in use by another user
             if (userRepository.existsByEmailAndUsernameNot(updateRequest.getEmail(), username)) {
                 return ResponseEntity.badRequest().body("Email is already in use by another account.");
             }
@@ -87,13 +86,11 @@ public class UserController {
         String username = principal.getName();
         User user = userRepository.findByUsername(username);
 
-        // Map user entity to DTO if necessary
         UserProfileResponse profile = new UserProfileResponse();
         profile.setUsername(user.getUsername());
         profile.setEmail(user.getEmail());
         profile.setFirstName(user.getFirstName());
         profile.setLastName(user.getLastName());
-        // ... other fields
 
         return ResponseEntity.ok(profile);
     }

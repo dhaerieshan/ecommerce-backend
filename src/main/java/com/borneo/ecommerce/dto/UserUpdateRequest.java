@@ -8,7 +8,7 @@ import lombok.Data;
 public class UserUpdateRequest {
 
     @Size(min = 3, max = 40)
-    private String username; // Optional if you allow username changes
+    private String username;
 
     @Email
     private String email;
