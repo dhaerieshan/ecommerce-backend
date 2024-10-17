@@ -66,6 +66,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN")
                         .requestMatchers("/api/vendor/**").hasAnyAuthority("VENDOR")
                         .requestMatchers("/api/user/me").hasAuthority("USER")
+                        .requestMatchers("/images/**").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers("/api/cart/**").permitAll()
+                        .requestMatchers("/api/category/**").permitAll()
+                        .requestMatchers("/api/products/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

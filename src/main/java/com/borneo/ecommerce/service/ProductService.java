@@ -1,48 +1,22 @@
-
 package com.borneo.ecommerce.service;
 
-import com.borneo.ecommerce.exception.ResourceNotFoundException;
 import com.borneo.ecommerce.model.Product;
-import com.borneo.ecommerce.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class ProductService {
+public interface ProductService {
+    Product createProduct(Product product);
 
-    @Autowired
-    private ProductRepository productRepository;
+    List<Product> getAllProducts();
 
-    public Product createProduct(Product product) {
-        return productRepository.save(product);
-    }
+    Optional<Product> getProductById(long id);
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
+    Product updateProduct(Long id, Product productDetails);
 
-    public Optional<Product> getProductById(long id) {
-        return productRepository.findById(id);
-    }
+    void deleteProduct(Long id);
 
-    public Product updateProduct(Long id, Product productDetails) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found for this id :: " + id));
+    List<Product> getSuggestedProducts(Long productId); // Updated method
 
-        product.setName(productDetails.getName());
-        product.setDescription(productDetails.getDescription());
-        product.setPrice(productDetails.getPrice());
-        product.setStock(productDetails.getStock());
-
-        return productRepository.save(product);
-    }
-
-    public void deleteProduct(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found for this id :: " + id));
-        productRepository.delete(product);
-    }
+    List<Product> findByCategoryId(Long categoryId);
 }

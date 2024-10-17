@@ -1,7 +1,8 @@
 package com.borneo.ecommerce.model;
 
-import lombok.Data;
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.math.BigDecimal;
 
 @Entity
@@ -11,7 +12,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column
     private String name;
@@ -24,6 +25,13 @@ public class Product {
 
     @Column
     private String description;
+
+    @Column
+    private String imagePath;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
 
 
