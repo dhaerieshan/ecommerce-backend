@@ -11,5 +11,7 @@ public interface CartService {
 
     void removeProductFromCart(User user, Long productId);
 
+    void deleteByUser(User user);
+
     // Other method declarations...
 }

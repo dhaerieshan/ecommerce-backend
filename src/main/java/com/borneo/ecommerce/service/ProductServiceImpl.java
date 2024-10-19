@@ -1,14 +1,16 @@
 package com.borneo.ecommerce.service;
 
+import com.borneo.ecommerce.dto.ProductDTO;
 import com.borneo.ecommerce.exception.ResourceNotFoundException;
 import com.borneo.ecommerce.model.Category;
 import com.borneo.ecommerce.model.Product;
+import com.borneo.ecommerce.repository.CategoryRepository;
 import com.borneo.ecommerce.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -16,33 +18,57 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;  // Ensure @Autowired is present
+
     @Override
-    public Product createProduct(Product product) {
-        return productRepository.save(product);
+    public ProductDTO createProduct(ProductDTO productDTO) {
+        Product product = new Product();
+        // Map fields from DTO to entity
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setPrice(productDTO.getPrice());
+        product.setStock(productDTO.getStock());
+
+        // Set category
+        Category category = categoryRepository.findById(productDTO.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found for this id: " + productDTO.getCategoryId()));
+        product.setCategory(category);
+
+        // Save product
+        Product savedProduct = productRepository.save(product);
+
+        // Convert to DTO and return
+        return new ProductDTO(savedProduct);
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<ProductDTO> getAllProducts() {
+        return productRepository.findAll().stream()
+                .map(ProductDTO::new)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<Product> getProductById(long id) {
-        return productRepository.findById(id);
-    }
-
-    @Override
-    public Product updateProduct(Long id, Product productDetails) {
-        Product product = productRepository.findById(id)
+    public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
+        Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found for this id :: " + id));
 
-        product.setName(productDetails.getName());
-        product.setDescription(productDetails.getDescription());
-        product.setPrice(productDetails.getPrice());
-        product.setStock(productDetails.getStock());
-        product.setCategory(productDetails.getCategory());
+        existingProduct.setName(productDTO.getName());
+        existingProduct.setPrice(productDTO.getPrice());
+        existingProduct.setDescription(productDTO.getDescription());
+        existingProduct.setStock(productDTO.getStock());
 
-        return productRepository.save(product);
+        // Fetch and set the category
+        Category category = categoryRepository.findById(productDTO.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found for this id: " + productDTO.getCategoryId()));
+        existingProduct.setCategory(category);
+
+        // Save the updated product
+        Product updatedProduct = productRepository.save(existingProduct);
+
+        // Convert to ProductDTO before returning
+        return new ProductDTO(updatedProduct);
     }
 
     @Override
@@ -53,7 +79,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getSuggestedProducts(Long productId) {
+    public List<ProductDTO> getSuggestedProducts(Long productId) {
         // Fetch the current product to get its category
         Product currentProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
@@ -61,11 +87,30 @@ public class ProductServiceImpl implements ProductService {
         Category category = currentProduct.getCategory();
 
         // Fetch top 5 products from the same category, excluding the current product
-        return productRepository.findTop5ByCategoryAndIdNot(category, productId);
+        return productRepository.findTop5ByCategoryAndIdNot(category, productId).stream()
+                .map(ProductDTO::new)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Product> findByCategoryId(Long categoryId) {
-        return productRepository.findByCategoryId(categoryId);
+    public List<ProductDTO> findByCategoryId(Long categoryId) {
+        return productRepository.findByCategoryId(categoryId).stream()
+                .map(ProductDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ProductDTO getProductById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + id));
+        return new ProductDTO(product);
+    }
+
+    @Override
+    public List<ProductDTO> searchProducts(String query) {
+        List<Product> products = productRepository.searchByName(query);
+        return products.stream()
+                .map(ProductMapper.INSTANCE::toDTO)
+                .collect(Collectors.toList());
     }
 }

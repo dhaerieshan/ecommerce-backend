@@ -1,44 +1,45 @@
 package com.borneo.ecommerce.dto;
 
-import com.borneo.ecommerce.model.Category;
 import com.borneo.ecommerce.model.Product;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
-
-import java.math.BigDecimal;
 
 @Data
 public class ProductDTO {
     private Long id;
+
+    @NotBlank(message = "Product name is required")
     private String name;
-    private BigDecimal price;
-    private String imagePath;
+
     private String description;
-    private Long categoryId;
-    private String categoryName;
-    private Integer stock;
+
+    @NotNull(message = "Price is required")
+    @Positive(message = "Price must be positive")
+    private Double price;
+
+    @NotNull(message = "Stock is required")
+    private Integer stock; // Ensure this matches your entity's field name
+
+    private String imagePath;
+
+    @NotNull(message = "Category is required")
+    private Long categoryId; // To receive category selection
+
+    // Constructors
+    public ProductDTO() {
+    }
 
     public ProductDTO(Product product) {
         this.id = product.getId();
         this.name = product.getName();
-        this.price = product.getPrice();
-        this.imagePath = product.getImagePath();
         this.description = product.getDescription();
-        this.stock = product.getStock();
+        this.price = product.getPrice();
+        this.stock = product.getStock(); // Ensure consistency
+        this.imagePath = product.getImagePath();
         if (product.getCategory() != null) {
             this.categoryId = product.getCategory().getId();
-            this.categoryName = buildCategoryPath(product.getCategory());
         }
     }
-
-    private String buildCategoryPath(Category category) {
-        if (category == null) return null;
-        StringBuilder path = new StringBuilder(category.getName());
-        Category parent = category.getParent();
-        while (parent != null) {
-            path.insert(0, parent.getName() + " > ");
-            parent = parent.getParent();
-        }
-        return path.toString();
-    }
-
 }

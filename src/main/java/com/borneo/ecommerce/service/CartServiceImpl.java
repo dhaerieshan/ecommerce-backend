@@ -34,6 +34,7 @@ public class CartServiceImpl implements CartService {
         });
     }
 
+
     @Override
     @Transactional
     public void addProductToCart(User user, Long productId, int quantity) {
@@ -72,5 +73,11 @@ public class CartServiceImpl implements CartService {
         }
     }
 
-    // Other methods...
+    @Override
+    @Transactional
+    public void deleteByUser(User user) {
+        Cart cart = getCartByUser(user);
+        cartRepository.delete(cart);
+    }
+
 }

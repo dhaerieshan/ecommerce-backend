@@ -2,7 +2,12 @@ package com.borneo.ecommerce.controller;
 
 import com.borneo.ecommerce.dto.ProductDTO;
 import com.borneo.ecommerce.exception.ResourceNotFoundException;
+import com.borneo.ecommerce.model.Category;
 import com.borneo.ecommerce.model.Product;
+import com.borneo.ecommerce.repository.CategoryRepository;
+import com.borneo.ecommerce.repository.ProductRepository;
+import com.borneo.ecommerce.repository.UserRepository;
+import com.borneo.ecommerce.service.ProductMapper;
 import com.borneo.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,47 +35,77 @@ public class ProductController {
     @Value("${app.upload.dir}")
     private String UPLOAD_DIR;
 
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    // Create Product
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        Product createdProduct = productService.createProduct(product);
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
+        ProductDTO createdProduct = productService.createProduct(productDTO);
         return ResponseEntity.status(201).body(createdProduct);
     }
 
+    // Get All Products
     @GetMapping
     public List<ProductDTO> getAllProducts(@RequestParam(required = false) Long categoryId) {
-        List<Product> products;
         if (categoryId != null) {
-            products = productService.findByCategoryId(categoryId);
+            return productService.findByCategoryId(categoryId);
         } else {
-            products = productService.getAllProducts();
+            return productService.getAllProducts();
         }
-        return products.stream().map(ProductDTO::new).collect(Collectors.toList());
     }
 
+    // Get Product by ID
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
-        Product product = productService.getProductById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-
-        // Map Product to ProductDTO
-        ProductDTO dto = new ProductDTO(product);
-
-        return ResponseEntity.ok(dto);
+        try {
+            ProductDTO dto = productService.getProductById(id);
+            return ResponseEntity.ok(dto);
+        } catch (ResourceNotFoundException ex) {
+            return ResponseEntity.status(404).body(null);
+        }
     }
 
+    // Update Product
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable(value = "id") Long productId,
-                                                 @RequestBody Product productDetails) {
-        Product updatedProduct = productService.updateProduct(productId, productDetails);
-        return ResponseEntity.ok(updatedProduct);
+    public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found for this id :: " + id));
+
+        // Map DTO to entity
+        Product productToUpdate = ProductMapper.INSTANCE.toEntity(productDTO);
+        productToUpdate.setId(existingProduct.getId()); // Ensure the ID is set
+
+        // Fetch and set category
+        Category category = categoryRepository.findById(productDTO.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found for this id: " + productDTO.getCategoryId()));
+        productToUpdate.setCategory(category);
+
+        // Save updated product
+        Product updatedProduct = productRepository.save(productToUpdate);
+
+        // Convert to DTO and return
+        return ProductMapper.INSTANCE.toDTO(updatedProduct);
     }
 
+    // Delete Product
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable(value = "id") Long productId) {
-        productService.deleteProduct(productId);
-        return ResponseEntity.ok().build();
+        try {
+            productService.deleteProduct(productId);
+            return ResponseEntity.ok().build();
+        } catch (ResourceNotFoundException ex) {
+            return ResponseEntity.status(404).body(null);
+        }
     }
 
+    // Get Suggested Products
     @PostMapping("/suggestions")
     public ResponseEntity<List<ProductDTO>> getSuggestions(@RequestBody Map<String, Long> payload) {
         Long productId = payload.get("productId");
@@ -78,26 +113,35 @@ public class ProductController {
             return ResponseEntity.badRequest().body(null);
         }
 
-        List<Product> suggestions = productService.getSuggestedProducts(productId);
-        List<ProductDTO> suggestionDTOs = suggestions.stream()
-                .map(ProductDTO::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(suggestionDTOs);
+        List<ProductDTO> suggestions = productService.getSuggestedProducts(productId);
+        return ResponseEntity.ok(suggestions);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductDTO>> searchProducts(@RequestParam String query) {
+        List<Product> products = productRepository.searchByName(query);
+        List<ProductDTO> productDTOs = products.stream()
+                .map(ProductMapper.INSTANCE::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(productDTOs);
+    }
+
+    // Upload Image
     @PostMapping("/{id}/upload-image")
     public ResponseEntity<?> uploadImage(@PathVariable Long id, @RequestParam("image") MultipartFile file) {
         // Retrieve the product
-        Product product = productService.getProductById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-
-        // Create the filename
-        String filename = StringUtils.cleanPath(file.getOriginalFilename());
-
-        // Define the upload path
-        Path uploadPath = Paths.get(UPLOAD_DIR);
-
         try {
+            ProductDTO productDTO = productService.getProductById(id);
+            if (productDTO == null) {
+                throw new ResourceNotFoundException("Product not found");
+            }
+
+            // Create the filename
+            String filename = StringUtils.cleanPath(file.getOriginalFilename());
+
+            // Define the upload path
+            Path uploadPath = Paths.get(UPLOAD_DIR);
+
             // Ensure the directory exists
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
@@ -108,11 +152,13 @@ public class ProductController {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
             // Update the product's image path
-            product.setImagePath("/images/" + filename);
-            productService.createProduct(product);
+            productDTO.setImagePath("/images/" + filename);
+            productService.updateProduct(id, productDTO);
 
             return ResponseEntity.ok("Image uploaded successfully");
 
+        } catch (ResourceNotFoundException ex) {
+            return ResponseEntity.status(404).body("Product not found");
         } catch (IOException e) {
             e.printStackTrace();
             String errorMessage = "Could not upload the image: " + e.getMessage();

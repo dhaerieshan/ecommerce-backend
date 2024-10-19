@@ -1,22 +1,22 @@
 package com.borneo.ecommerce.service;
 
-import com.borneo.ecommerce.model.Product;
+import com.borneo.ecommerce.dto.ProductDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ProductService {
-    Product createProduct(Product product);
+    ProductDTO createProduct(ProductDTO productDTO);
 
-    List<Product> getAllProducts();
+    List<ProductDTO> getAllProducts();
 
-    Optional<Product> getProductById(long id);
-
-    Product updateProduct(Long id, Product productDetails);
-
+    ProductDTO updateProduct(Long id, ProductDTO productDTO);
     void deleteProduct(Long id);
 
-    List<Product> getSuggestedProducts(Long productId); // Updated method
+    List<ProductDTO> getSuggestedProducts(Long productId);
 
-    List<Product> findByCategoryId(Long categoryId);
+    List<ProductDTO> findByCategoryId(Long categoryId);
+
+    ProductDTO getProductById(Long id);
+
+    List<ProductDTO> searchProducts(String query);
 }

@@ -1,9 +1,8 @@
 package com.borneo.ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "products")
@@ -14,27 +13,17 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
     private String name;
-
-    @Column(length =  1000)
-    private BigDecimal price;
-
-    @Column
-    private Integer stock;
-
-    @Column
     private String description;
+    private double price;
+    private int stock;
 
-    @Column
+    // Image path or URL
     private String imagePath;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
+    // Relationship with Category
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id") // Foreign key column in products table
+    @JsonBackReference
     private Category category;
-
-
-
-
-
 }

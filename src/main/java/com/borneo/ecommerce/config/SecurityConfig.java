@@ -68,7 +68,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/user/me").hasAuthority("USER")
                         .requestMatchers("/images/**").hasAnyAuthority("ADMIN", "USER")
                         .requestMatchers("/api/cart/**").permitAll()
-                        .requestMatchers("/api/category/**").permitAll()
+                        .requestMatchers("/api/categories/**").permitAll()
                         .requestMatchers("/api/products/**").permitAll()
                         .anyRequest().authenticated()
                 )

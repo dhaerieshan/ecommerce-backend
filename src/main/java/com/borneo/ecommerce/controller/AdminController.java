@@ -4,6 +4,9 @@ import com.borneo.ecommerce.dto.UserResponseDTO;
 import com.borneo.ecommerce.exception.ResourceNotFoundException;
 import com.borneo.ecommerce.model.Role;
 import com.borneo.ecommerce.model.User;
+import com.borneo.ecommerce.repository.CartRepository;
+import com.borneo.ecommerce.repository.UserRepository;
+import com.borneo.ecommerce.service.CartService;
 import com.borneo.ecommerce.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,15 @@ public class AdminController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CartService cartService;
+
+    @Autowired
+    private CartRepository cartRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping("/users")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         List<User> users = userService.findAll();
@@ -28,7 +40,7 @@ public class AdminController {
 
     @GetMapping("/users/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
-        User user = userService.findById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         UserResponseDTO dto = convertToDTO(user);
         return ResponseEntity.ok(dto);
@@ -36,6 +48,10 @@ public class AdminController {
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity<?> deleteUserById(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        cartService.deleteByUser(user);
         userService.deleteById(id);
         return ResponseEntity.ok().build();
     }
