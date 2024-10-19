@@ -2,7 +2,6 @@ package com.borneo.ecommerce.controller;
 
 import com.borneo.ecommerce.dto.ProductDTO;
 import com.borneo.ecommerce.exception.ResourceNotFoundException;
-import com.borneo.ecommerce.model.Category;
 import com.borneo.ecommerce.model.Product;
 import com.borneo.ecommerce.repository.CategoryRepository;
 import com.borneo.ecommerce.repository.ProductRepository;
@@ -12,17 +11,20 @@ import com.borneo.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -73,25 +75,25 @@ public class ProductController {
     }
 
     // Update Product
-    @PutMapping("/{id}")
-    public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
-        Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found for this id :: " + id));
+    @PatchMapping("/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
 
-        // Map DTO to entity
-        Product productToUpdate = ProductMapper.INSTANCE.toEntity(productDTO);
-        productToUpdate.setId(existingProduct.getId()); // Ensure the ID is set
+        Product product = optionalProduct.get();
 
-        // Fetch and set category
-        Category category = categoryRepository.findById(productDTO.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found for this id: " + productDTO.getCategoryId()));
-        productToUpdate.setCategory(category);
+        updates.forEach((key, value) -> {
+            Field field = ReflectionUtils.findField(Product.class, key);
+            if (field != null) {
+                field.setAccessible(true);
+                ReflectionUtils.setField(field, product, value);
+            }
+        });
 
-        // Save updated product
-        Product updatedProduct = productRepository.save(productToUpdate);
-
-        // Convert to DTO and return
-        return ProductMapper.INSTANCE.toDTO(updatedProduct);
+        productRepository.save(product);
+        return ResponseEntity.ok(product);
     }
 
     // Delete Product
