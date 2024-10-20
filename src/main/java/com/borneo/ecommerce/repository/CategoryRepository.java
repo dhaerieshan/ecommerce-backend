@@ -1,25 +1,17 @@
-// src/main/java/com/borneo/ecommerce/repository/CategoryRepository.java
-
 package com.borneo.ecommerce.repository;
 
 import com.borneo.ecommerce.model.Category;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
+@Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-    // Fetch categories where parentCategory is null (i.e., top-level parent categories)
-    @EntityGraph(attributePaths = {"subcategories"})
-    List<Category> findByParentCategoryIsNull();
+    List<Category> findByParentIsNull();  // Top-level categories (no parent)
 
-    // Fetch subcategories by parent ID
-    @EntityGraph(attributePaths = {"subcategories"})
-    List<Category> findByParentCategoryId(Long parentId);
+    List<Category> findByParentId(Long parentId);  // Subcategories of a specific parent
 
     boolean existsByName(String name);
-
-    Optional<Category> findByName(String name);
 }

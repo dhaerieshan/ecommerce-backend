@@ -16,6 +16,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     // For finding suggested products based on category (optional)
     List<Product> findTop5ByCategoryAndIdNot(Category category, Long excludeProductId);
 
-    @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
-    List<Product> searchByName(@Param("searchTerm") String searchTerm);
+    @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(p.description) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    List<Product> searchByNameOrDescription(@Param("searchTerm") String searchTerm);
+
 }

@@ -121,7 +121,7 @@ public class ProductController {
 
     @GetMapping("/search")
     public ResponseEntity<List<ProductDTO>> searchProducts(@RequestParam String query) {
-        List<Product> products = productRepository.searchByName(query);
+        List<Product> products = productRepository.searchByNameOrDescription(query);
         List<ProductDTO> productDTOs = products.stream()
                 .map(ProductMapper.INSTANCE::toDTO)
                 .collect(Collectors.toList());

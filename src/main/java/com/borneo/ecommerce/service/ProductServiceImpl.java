@@ -29,6 +29,7 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());
         product.setStock(productDTO.getStock());
+        product.setImagePath(productDTO.getImagePath());
 
         // Set category
         Category category = categoryRepository.findById(productDTO.getCategoryId())
@@ -58,6 +59,7 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setPrice(productDTO.getPrice());
         existingProduct.setDescription(productDTO.getDescription());
         existingProduct.setStock(productDTO.getStock());
+        existingProduct.setImagePath(productDTO.getImagePath());
 
         // Fetch and set the category
         Category category = categoryRepository.findById(productDTO.getCategoryId())
@@ -108,7 +110,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> searchProducts(String query) {
-        List<Product> products = productRepository.searchByName(query);
+        List<Product> products = productRepository.searchByNameOrDescription(query);
         return products.stream()
                 .map(ProductMapper.INSTANCE::toDTO)
                 .collect(Collectors.toList());

@@ -1,5 +1,3 @@
-// src/main/java/com/borneo/ecommerce/service/impl/CategoryServiceImpl.java
-
 package com.borneo.ecommerce.service.impl;
 
 import com.borneo.ecommerce.dto.CategoryDTO;
@@ -30,10 +28,11 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = new Category();
         category.setName(categoryDTO.getName());
 
+        // Handle parent category
         if (categoryDTO.getParentId() != null) {
-            Category parent = categoryRepository.findById(categoryDTO.getParentId())
+            Category parentCategory = categoryRepository.findById(categoryDTO.getParentId())
                     .orElseThrow(() -> new ResourceNotFoundException("Parent category not found with id: " + categoryDTO.getParentId()));
-            category.setParentCategory(parent);
+            category.setParent(parentCategory);
         }
 
         Category savedCategory = categoryRepository.save(category);
@@ -43,7 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional(readOnly = true)
     public List<CategoryDTO> getAllCategories() {
-        List<Category> topLevelCategories = categoryRepository.findByParentCategoryIsNull();
+        List<Category> topLevelCategories = categoryRepository.findByParentIsNull();
         return topLevelCategories.stream()
                 .map(CategoryDTO::new)
                 .collect(Collectors.toList());
@@ -54,7 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
     public List<CategoryDTO> getSubcategories(Long parentId) {
         Category parent = categoryRepository.findById(parentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Parent category not found with id: " + parentId));
-        List<Category> subcategories = categoryRepository.findByParentCategoryId(parentId);
+        List<Category> subcategories = categoryRepository.findByParentId(parentId);
         return subcategories.stream()
                 .map(CategoryDTO::new)
                 .collect(Collectors.toList());
@@ -72,19 +71,16 @@ public class CategoryServiceImpl implements CategoryService {
 
         category.setName(categoryDTO.getName());
 
+        // Handle parent category update
         if (categoryDTO.getParentId() != null) {
             if (categoryDTO.getParentId().equals(id)) {
                 throw new IllegalArgumentException("Category cannot be its own parent.");
             }
             Category parent = categoryRepository.findById(categoryDTO.getParentId())
                     .orElseThrow(() -> new ResourceNotFoundException("Parent category not found with id: " + categoryDTO.getParentId()));
-            // Prevent circular relationship
-            if (isCircularRelationship(id, parent, categoryDTO.getParentId())) {
-                throw new IllegalArgumentException("Circular category relationship detected.");
-            }
-            category.setParentCategory(parent);
+            category.setParent(parent);
         } else {
-            category.setParentCategory(null);
+            category.setParent(null);  // Make it a top-level category
         }
 
         Category updatedCategory = categoryRepository.save(category);
@@ -97,29 +93,14 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
 
-        if (!category.getSubcategories().isEmpty()) {
-            throw new IllegalStateException("Cannot delete category with existing subcategories.");
-        }
-
-        if (!category.getProducts().isEmpty()) {
-            throw new IllegalStateException("Cannot delete category with associated products.");
-        }
-
         categoryRepository.delete(category);
     }
 
-    // Utility method to check for circular relationships
-    private boolean isCircularRelationship(Long currentId, Category parent, Long newParentId) {
-        if (newParentId == null) return false;
-        if (currentId != null && newParentId.equals(currentId)) return true;
-
-        Category tempParent = parent;
-        while (tempParent != null) {
-            if (tempParent.getId().equals(currentId)) {
-                return true;
-            }
-            tempParent = tempParent.getParentCategory();
-        }
-        return false;
+    @Override
+    @Transactional(readOnly = true)
+    public CategoryDTO getCategoryById(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
+        return new CategoryDTO(category);
     }
 }
