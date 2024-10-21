@@ -2,6 +2,7 @@ package com.borneo.ecommerce.controller;
 
 import com.borneo.ecommerce.dto.ProductDTO;
 import com.borneo.ecommerce.exception.ResourceNotFoundException;
+import com.borneo.ecommerce.model.Category;
 import com.borneo.ecommerce.model.Product;
 import com.borneo.ecommerce.repository.CategoryRepository;
 import com.borneo.ecommerce.repository.ProductRepository;
@@ -85,13 +86,23 @@ public class ProductController {
         Product product = optionalProduct.get();
 
         updates.forEach((key, value) -> {
-            Field field = ReflectionUtils.findField(Product.class, key);
-            if (field != null) {
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, product, value);
+            if ("categoryId".equals(key)) {
+                // Handle categoryId separately
+                Long categoryId = Long.valueOf((Integer) value); // Convert value to Long if it's in Integer format
+                Category category = categoryRepository.findById(categoryId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Category not found for this id: " + categoryId));
+                product.setCategory(category); // Set the fetched Category object
+            } else {
+                // Use ReflectionUtils for other fields
+                Field field = ReflectionUtils.findField(Product.class, key);
+                if (field != null) {
+                    field.setAccessible(true);
+                    ReflectionUtils.setField(field, product, value);
+                }
             }
         });
 
+        // Save the updated product
         productRepository.save(product);
         return ResponseEntity.ok(product);
     }

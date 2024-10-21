@@ -48,16 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<CategoryDTO> getSubcategories(Long parentId) {
-        Category parent = categoryRepository.findById(parentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Parent category not found with id: " + parentId));
-        List<Category> subcategories = categoryRepository.findByParentId(parentId);
-        return subcategories.stream()
-                .map(CategoryDTO::new)
-                .collect(Collectors.toList());
-    }
+
 
     @Override
     @Transactional
@@ -103,4 +94,20 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
         return new CategoryDTO(category);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CategoryDTO> getSubcategories(Long id) {
+        Category parent = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Parent category not found with id: " + id));
+
+        // Fetch the list of subcategories from the parent category
+        List<Category> subcategories = parent.getSubcategories();
+
+        // Convert the list of Category entities to CategoryDTOs
+        return subcategories.stream()
+                .map(CategoryDTO::new)  // Convert each Category to CategoryDTO
+                .collect(Collectors.toList());
+    }
+
 }
