@@ -9,6 +9,7 @@ import com.borneo.ecommerce.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,27 +20,22 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
 
     @Autowired
-    private CategoryRepository categoryRepository;  // Ensure @Autowired is present
+    private CategoryRepository categoryRepository;
 
     @Override
     public ProductDTO createProduct(ProductDTO productDTO) {
         Product product = new Product();
-        // Map fields from DTO to entity
         product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());
         product.setStock(productDTO.getStock());
         product.setImagePath(productDTO.getImagePath());
 
-        // Set category
         Category category = categoryRepository.findById(productDTO.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found for this id: " + productDTO.getCategoryId()));
         product.setCategory(category);
 
-        // Save product
         Product savedProduct = productRepository.save(product);
-
-        // Convert to DTO and return
         return new ProductDTO(savedProduct);
     }
 
@@ -51,7 +47,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
+    public void updateProduct(Long id, ProductDTO productDTO) {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found for this id :: " + id));
 
@@ -61,16 +57,11 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setStock(productDTO.getStock());
         existingProduct.setImagePath(productDTO.getImagePath());
 
-        // Fetch and set the category
         Category category = categoryRepository.findById(productDTO.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found for this id: " + productDTO.getCategoryId()));
         existingProduct.setCategory(category);
 
-        // Save the updated product
-        Product updatedProduct = productRepository.save(existingProduct);
-
-        // Convert to ProductDTO before returning
-        return new ProductDTO(updatedProduct);
+        productRepository.save(existingProduct);
     }
 
     @Override
@@ -82,13 +73,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> getSuggestedProducts(Long productId) {
-        // Fetch the current product to get its category
         Product currentProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         Category category = currentProduct.getCategory();
-
-        // Fetch top 5 products from the same category, excluding the current product
         return productRepository.findTop5ByCategoryAndIdNot(category, productId).stream()
                 .map(ProductDTO::new)
                 .collect(Collectors.toList());
@@ -114,5 +102,34 @@ public class ProductServiceImpl implements ProductService {
         return products.stream()
                 .map(ProductMapper.INSTANCE::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    // New method to fetch products from a category and all its subcategories
+    @Override
+    public List<ProductDTO> findProductsByCategoryAndSubcategories(Long categoryId) {
+        // Fetch the root category
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found for this id: " + categoryId));
+
+        // Gather all category IDs (parent and subcategories)
+        List<Long> categoryIds = gatherCategoryAndSubcategoryIds(category);
+
+        // Fetch products for all the gathered category IDs
+        List<Product> products = productRepository.findByCategoryIds(categoryIds);
+        return products.stream()
+                .map(ProductDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    // Helper method to recursively gather all category IDs
+    private List<Long> gatherCategoryAndSubcategoryIds(Category category) {
+        List<Long> categoryIds = new ArrayList<>();
+        categoryIds.add(category.getId()); // Add the current category ID
+
+        // Recursively add all child category IDs
+        for (Category child : category.getSubcategories()) {
+            categoryIds.addAll(gatherCategoryAndSubcategoryIds(child));
+        }
+        return categoryIds;
     }
 }

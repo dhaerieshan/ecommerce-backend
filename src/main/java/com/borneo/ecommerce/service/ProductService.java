@@ -9,7 +9,7 @@ public interface ProductService {
 
     List<ProductDTO> getAllProducts();
 
-    ProductDTO updateProduct(Long id, ProductDTO productDTO);
+    void updateProduct(Long id, ProductDTO productDTO);
     void deleteProduct(Long id);
 
     List<ProductDTO> getSuggestedProducts(Long productId);
@@ -19,4 +19,7 @@ public interface ProductService {
     ProductDTO getProductById(Long id);
 
     List<ProductDTO> searchProducts(String query);
+
+    List<ProductDTO> findProductsByCategoryAndSubcategories(Long categoryId);
+
 }

@@ -178,4 +178,15 @@ public class ProductController {
             return ResponseEntity.status(500).body(errorMessage);
         }
     }
+
+    @GetMapping("/category/{id}")
+    public ResponseEntity<List<ProductDTO>> getProductsByCategoryId(@PathVariable Long id) {
+        try {
+            // Fetch products in the category and all its subcategories
+            List<ProductDTO> products = productService.findProductsByCategoryAndSubcategories(id);
+            return ResponseEntity.ok(products);
+        } catch (ResourceNotFoundException ex) {
+            return ResponseEntity.status(404).body(null);
+        }
+    }
 }
