@@ -1,10 +1,9 @@
-package com.borneo.ecommerce.service.impl;
+package com.borneo.ecommerce.service;
 
 import com.borneo.ecommerce.dto.CategoryDTO;
 import com.borneo.ecommerce.exception.ResourceNotFoundException;
 import com.borneo.ecommerce.model.Category;
 import com.borneo.ecommerce.repository.CategoryRepository;
-import com.borneo.ecommerce.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

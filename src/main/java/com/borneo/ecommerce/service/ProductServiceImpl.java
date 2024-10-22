@@ -98,7 +98,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> searchProducts(String query) {
-        List<Product> products = productRepository.searchByNameOrDescription(query);
+        List<Product> products = productRepository.searchByNameDescriptionOrCategory(query);
         return products.stream()
                 .map(ProductMapper.INSTANCE::toDTO)
                 .collect(Collectors.toList());

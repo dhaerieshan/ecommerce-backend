@@ -21,6 +21,8 @@ public class Category {
     @Column(nullable = false, unique = true)
     private String name;
 
+    private String imagePath;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Category parent;  // This is the self-referencing relationship
