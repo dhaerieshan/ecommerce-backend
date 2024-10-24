@@ -1,5 +1,6 @@
 package com.borneo.ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -38,4 +39,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("user") // Prevents serialization of 'user' inside 'wishlists'
+    private Set<Wishlist> wishlists = new HashSet<>();
 }

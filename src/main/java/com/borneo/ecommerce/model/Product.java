@@ -1,8 +1,12 @@
 package com.borneo.ecommerce.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -29,4 +33,9 @@ public class Product {
     @JoinColumn(name = "category_id") // Foreign key column in products table
     @JsonBackReference
     private Category category;
+
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("product") // Prevents serialization of 'product' inside 'wishlists'
+    private Set<Wishlist> wishlists = new HashSet<>();
 }

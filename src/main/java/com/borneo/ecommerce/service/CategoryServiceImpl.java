@@ -26,6 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = new Category();
         category.setName(categoryDTO.getName());
+        category.setImagePath(categoryDTO.getImagePath());
 
         // Handle parent category
         if (categoryDTO.getParentId() != null) {
@@ -60,8 +61,8 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         category.setName(categoryDTO.getName());
+        category.setImagePath(categoryDTO.getImagePath() != null ? categoryDTO.getImagePath() : category.getImagePath());
 
-        // Handle parent category update
         if (categoryDTO.getParentId() != null) {
             if (categoryDTO.getParentId().equals(id)) {
                 throw new IllegalArgumentException("Category cannot be its own parent.");
