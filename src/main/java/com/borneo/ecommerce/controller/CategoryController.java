@@ -112,4 +112,44 @@ public class CategoryController {
         }
     }
 
+    @PostMapping("/{id}/upload-banner")
+    public ResponseEntity<?> uploadBanner(@PathVariable Long id, @RequestParam("banner") MultipartFile file) {
+        try {
+            CategoryDTO categoryDTO = categoryService.getCategoryById(id);
+            if (categoryDTO == null) {
+                throw new ResourceNotFoundException("Category not found");
+            }
+
+            // Create the filename
+            String filename = StringUtils.cleanPath(file.getOriginalFilename());
+
+            // Define the upload path
+            Path uploadPath = Paths.get(UPLOAD_DIR);
+
+            // Ensure the directory exists
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            // Save the new image file
+            Path filePath = uploadPath.resolve(filename);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            // Update the category's image path
+            categoryDTO.setBannerPath("/images/" + filename);
+
+            // Now save the updated category
+            categoryService.updateCategory(id, categoryDTO);
+
+            return ResponseEntity.ok("Image uploaded successfully");
+
+        } catch (ResourceNotFoundException ex) {
+            return ResponseEntity.status(404).body("Category not found");
+        } catch (IOException e) {
+            e.printStackTrace();
+            String errorMessage = "Could not upload the image: " + e.getMessage();
+            return ResponseEntity.status(500).body(errorMessage);
+        }
+    }
+
 }

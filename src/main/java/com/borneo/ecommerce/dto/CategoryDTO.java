@@ -16,6 +16,7 @@ public class CategoryDTO {
     private Long id;
     private String name;
     private String imagePath;
+    private String bannerPath;
     private Long parentId;
     private List<CategoryDTO> children;
 
@@ -24,6 +25,7 @@ public class CategoryDTO {
         this.id = category.getId();
         this.name = category.getName();
         this.imagePath = category.getImagePath();
+        this.bannerPath = category.getBannerPath();
         this.parentId = category.getParent() != null ? category.getParent().getId() : null;
         this.children = category.getSubcategories() != null
                 ? category.getSubcategories().stream().map(CategoryDTO::new).collect(Collectors.toList())

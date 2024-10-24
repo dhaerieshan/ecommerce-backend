@@ -23,6 +23,8 @@ public class Category {
 
     private String imagePath;
 
+    private String bannerPath;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Category parent;  // This is the self-referencing relationship

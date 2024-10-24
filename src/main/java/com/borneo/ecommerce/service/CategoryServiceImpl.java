@@ -27,6 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = new Category();
         category.setName(categoryDTO.getName());
         category.setImagePath(categoryDTO.getImagePath());
+        category.setBannerPath(categoryDTO.getBannerPath());
 
         // Handle parent category
         if (categoryDTO.getParentId() != null) {
@@ -62,6 +63,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         category.setName(categoryDTO.getName());
         category.setImagePath(categoryDTO.getImagePath() != null ? categoryDTO.getImagePath() : category.getImagePath());
+        category.setBannerPath(categoryDTO.getBannerPath() != null ? categoryDTO.getBannerPath() : category.getBannerPath());
 
         if (categoryDTO.getParentId() != null) {
             if (categoryDTO.getParentId().equals(id)) {
