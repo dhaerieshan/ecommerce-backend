@@ -50,6 +50,8 @@ public class UserController {
         Map<String, Object> response = new HashMap<>();
         response.put("id", user.getId());
         response.put("username", user.getUsername());
+        response.put("firstname", user.getFirstName());
+        response.put("lastname", user.getLastName());
         response.put("email", user.getEmail());
         response.put("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toSet()));
 
