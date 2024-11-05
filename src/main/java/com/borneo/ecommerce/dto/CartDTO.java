@@ -18,7 +18,7 @@ public class CartDTO {
                 .collect(Collectors.toList());
     }
 
-    // Getters and Setters
+
     public Long getUserId() {
         return userId;
     }

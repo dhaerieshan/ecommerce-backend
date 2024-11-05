@@ -104,29 +104,29 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
 
-    // New method to fetch products from a category and all its subcategories
+
     @Override
     public List<ProductDTO> findProductsByCategoryAndSubcategories(Long categoryId) {
-        // Fetch the root category
+
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found for this id: " + categoryId));
 
-        // Gather all category IDs (parent and subcategories)
+
         List<Long> categoryIds = gatherCategoryAndSubcategoryIds(category);
 
-        // Fetch products for all the gathered category IDs
+
         List<Product> products = productRepository.findByCategoryIds(categoryIds);
         return products.stream()
                 .map(ProductDTO::new)
                 .collect(Collectors.toList());
     }
 
-    // Helper method to recursively gather all category IDs
+
     private List<Long> gatherCategoryAndSubcategoryIds(Category category) {
         List<Long> categoryIds = new ArrayList<>();
-        categoryIds.add(category.getId()); // Add the current category ID
+        categoryIds.add(category.getId());
 
-        // Recursively add all child category IDs
+
         for (Category child : category.getSubcategories()) {
             categoryIds.addAll(gatherCategoryAndSubcategoryIds(child));
         }

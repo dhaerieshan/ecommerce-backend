@@ -19,7 +19,7 @@ public class SignupRequest {
     @Email
     private String email;
 
-    private String signUpType; // 'USER', 'ADMIN', 'VENDOR'
+    private String signUpType;
 
-    private String secretCode; // Optional
+    private String secretCode;   
 }

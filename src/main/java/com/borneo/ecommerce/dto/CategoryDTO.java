@@ -20,7 +20,7 @@ public class CategoryDTO {
     private Long parentId;
     private List<CategoryDTO> children;
 
-    // Constructor to create a DTO from a Category entity
+
     public CategoryDTO(Category category) {
         this.id = category.getId();
         this.name = category.getName();

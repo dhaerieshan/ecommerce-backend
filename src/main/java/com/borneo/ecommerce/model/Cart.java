@@ -21,8 +21,7 @@ public class Cart {
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
-    private List<CartItem> items = new ArrayList<>(); // Initialized to prevent null
+    private List<CartItem> items = new ArrayList<>();
 
 
-    // Other fields and methods...
 }

@@ -29,7 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
         category.setImagePath(categoryDTO.getImagePath());
         category.setBannerPath(categoryDTO.getBannerPath());
 
-        // Handle parent category
+
         if (categoryDTO.getParentId() != null) {
             Category parentCategory = categoryRepository.findById(categoryDTO.getParentId())
                     .orElseThrow(() -> new ResourceNotFoundException("Parent category not found with id: " + categoryDTO.getParentId()));
@@ -73,7 +73,7 @@ public class CategoryServiceImpl implements CategoryService {
                     .orElseThrow(() -> new ResourceNotFoundException("Parent category not found with id: " + categoryDTO.getParentId()));
             category.setParent(parent);
         } else {
-            category.setParent(null);  // Make it a top-level category
+            category.setParent(null);    
         }
 
         Category updatedCategory = categoryRepository.save(category);
@@ -103,12 +103,12 @@ public class CategoryServiceImpl implements CategoryService {
         Category parent = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Parent category not found with id: " + id));
 
-        // Fetch the list of subcategories from the parent category
+
         List<Category> subcategories = parent.getSubcategories();
 
-        // Convert the list of Category entities to CategoryDTOs
+
         return subcategories.stream()
-                .map(CategoryDTO::new)  // Convert each Category to CategoryDTO
+                .map(CategoryDTO::new)    
                 .collect(Collectors.toList());
     }
 

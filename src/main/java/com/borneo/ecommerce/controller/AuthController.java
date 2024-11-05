@@ -95,7 +95,6 @@ public class AuthController {
                 roles.add(vendorRole);
                 break;
             default:
-                // Default to USER role
                 Role userRole = roleRepository.findByName("USER");
                 roles.add(userRole);
                 break;

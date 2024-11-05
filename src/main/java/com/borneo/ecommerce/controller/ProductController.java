@@ -47,14 +47,14 @@ public class ProductController {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    // Create Product
+
     @PostMapping
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
         ProductDTO createdProduct = productService.createProduct(productDTO);
         return ResponseEntity.status(201).body(createdProduct);
     }
 
-    // Get All Products
+
     @GetMapping
     public List<ProductDTO> getAllProducts(@RequestParam(required = false) Long categoryId) {
         if (categoryId != null) {
@@ -64,7 +64,7 @@ public class ProductController {
         }
     }
 
-    // Get Product by ID
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
         try {
@@ -75,7 +75,7 @@ public class ProductController {
         }
     }
 
-    // Update Product
+
     @PatchMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         Optional<Product> optionalProduct = productRepository.findById(id);
@@ -87,13 +87,13 @@ public class ProductController {
 
         updates.forEach((key, value) -> {
             if ("categoryId".equals(key)) {
-                // Handle categoryId separately
-                Long categoryId = Long.valueOf((Integer) value); // Convert value to Long if it's in Integer format
+
+                Long categoryId = Long.valueOf((Integer) value);   
                 Category category = categoryRepository.findById(categoryId)
                         .orElseThrow(() -> new ResourceNotFoundException("Category not found for this id: " + categoryId));
-                product.setCategory(category); // Set the fetched Category object
+                product.setCategory(category);   
             } else {
-                // Use ReflectionUtils for other fields
+
                 Field field = ReflectionUtils.findField(Product.class, key);
                 if (field != null) {
                     field.setAccessible(true);
@@ -102,12 +102,12 @@ public class ProductController {
             }
         });
 
-        // Save the updated product
+
         productRepository.save(product);
         return ResponseEntity.ok(product);
     }
 
-    // Delete Product
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable(value = "id") Long productId) {
         try {
@@ -118,7 +118,7 @@ public class ProductController {
         }
     }
 
-    // Get Suggested Products
+
     @PostMapping("/suggestions")
     public ResponseEntity<List<ProductDTO>> getSuggestions(@RequestBody Map<String, Long> payload) {
         Long productId = payload.get("productId");
@@ -139,32 +139,30 @@ public class ProductController {
         return ResponseEntity.ok(productDTOs);
     }
 
-    // Upload Image
     @PostMapping("/{id}/upload-image")
     public ResponseEntity<?> uploadImage(@PathVariable Long id, @RequestParam("image") MultipartFile file) {
-        // Retrieve the product
         try {
             ProductDTO productDTO = productService.getProductById(id);
             if (productDTO == null) {
                 throw new ResourceNotFoundException("Product not found");
             }
 
-            // Create the filename
+
             String filename = StringUtils.cleanPath(file.getOriginalFilename());
 
-            // Define the upload path
+
             Path uploadPath = Paths.get(UPLOAD_DIR);
 
-            // Ensure the directory exists
+
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-            // Save the new image file
+
             Path filePath = uploadPath.resolve(filename);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            // Update the product's image path
+
             productDTO.setImagePath("/images/" + filename);
             productService.updateProduct(id, productDTO);
 
@@ -182,7 +180,7 @@ public class ProductController {
     @GetMapping("/category/{id}")
     public ResponseEntity<List<ProductDTO>> getProductsByCategoryId(@PathVariable Long id) {
         try {
-            // Fetch products in the category and all its subcategories
+
             List<ProductDTO> products = productService.findProductsByCategoryAndSubcategories(id);
             return ResponseEntity.ok(products);
         } catch (ResourceNotFoundException ex) {

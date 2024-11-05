@@ -1,4 +1,4 @@
-// src/main/java/com/borneo/ecommerce/model/Wishlist.java
+
 
 package com.borneo.ecommerce.model;
 
@@ -22,12 +22,12 @@ public class Wishlist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Many wishlists belong to one user
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // Many wishlists can have one product
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;

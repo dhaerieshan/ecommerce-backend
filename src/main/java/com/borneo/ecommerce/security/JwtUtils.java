@@ -65,13 +65,13 @@ public class JwtUtils {
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .get("role", String.class);  // Retrieve the role from custom claim
+                .get("role", String.class);    
         System.out.println(("Extracted username from token: {}" + role));
         return role;
     }
 
     public String getUserRoles(String username) {
-        // Find the user by username
+
         Optional<User> userOptional = Optional.ofNullable(userRepository.findByUsername(username));
         if (userOptional.isPresent()) {
             User user = userOptional.get();
@@ -83,7 +83,7 @@ public class JwtUtils {
     }
     public boolean validateJwtToken(String authToken){
         try{
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken); // Changed here
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken);   
             return true;
         }catch (JwtException e){
             System.out.println("Invalid JWT token: " + e.getMessage());

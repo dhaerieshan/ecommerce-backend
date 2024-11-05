@@ -13,7 +13,7 @@ public class CartItemDTO {
         this.quantity = cartItem.getQuantity();
     }
 
-    // Getters and Setters
+
     public Long getId() {
         return id;
     }

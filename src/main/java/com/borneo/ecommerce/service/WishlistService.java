@@ -24,21 +24,21 @@ public class WishlistService {
     @Autowired
     private ProductRepository productRepository;
 
-    // Method to add a product to the wishlist
+
     public boolean addToWishlist(User user, Long productId) {
-        // Check if product exists
+
         Product product = productRepository.findById(productId).orElse(null);
         if (product == null) {
-            return false; // Product does not exist
+            return false;  
         }
 
-        // Check if already in wishlist
+
         boolean exists = wishlistRepository.existsByUserAndProductId(user, productId);
         if (exists) {
-            return false; // Already in wishlist
+            return false;  
         }
 
-        // Create and save wishlist entry
+
         Wishlist wishlist = Wishlist.builder()
                 .user(user)
                 .product(product)
@@ -49,20 +49,20 @@ public class WishlistService {
         return true;
     }
 
-    // Method to remove a product from the wishlist
+
     public boolean removeFromWishlist(User user, Long productId) {
-        // Find the wishlist entry
+
         Wishlist wishlist = wishlistRepository.findByUserAndProductId(user, productId);
         if (wishlist == null) {
-            return false; // Not found in wishlist
+            return false;  
         }
 
-        // Remove the wishlist entry
+
         wishlistRepository.delete(wishlist);
         return true;
     }
 
-    // Method to get all wishlist products for a user
+
     public Set<WishlistDTO> getWishlist(User user) {
         Set<Wishlist> wishlists = wishlistRepository.findByUser(user);
         return wishlists.stream().map(wishlist -> {

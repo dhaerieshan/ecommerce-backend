@@ -1,4 +1,4 @@
-// src/main/java/com/borneo/ecommerce/dto/WishlistDTO.java
+
 
 package com.borneo.ecommerce.dto;
 
@@ -13,5 +13,5 @@ public class WishlistDTO {
     private Long productId;
     private LocalDateTime dateAdded;
 
-    // Optionally, include nested DTOs or selective fields
+
 }

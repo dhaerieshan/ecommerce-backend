@@ -1,4 +1,4 @@
-// src/main/java/com/borneo/ecommerce/controller/UserController.java
+
 
 package com.borneo.ecommerce.controller;
 
@@ -56,7 +56,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/update") // Changed to POST for updates
+    @PostMapping("/update")   
     public ResponseEntity<?> userUpdate(@RequestBody UserUpdateRequest updateRequest, Authentication authentication) {
         String username = authentication.getName();
         User user = userRepository.findByUsername(username);

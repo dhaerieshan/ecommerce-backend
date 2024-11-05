@@ -25,17 +25,17 @@ public class Product {
     private double price;
     private int stock;
 
-    // Image path or URL
+
     private String imagePath;
 
-    // Relationship with Category
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id") // Foreign key column in products table
+    @JoinColumn(name = "category_id")   
     @JsonBackReference
     private Category category;
 
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("product") // Prevents serialization of 'product' inside 'wishlists'
+    @JsonIgnoreProperties("product")   
     private Set<Wishlist> wishlists = new HashSet<>();
 }

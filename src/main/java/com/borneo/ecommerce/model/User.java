@@ -42,6 +42,6 @@ public class User {
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("user") // Prevents serialization of 'user' inside 'wishlists'
+    @JsonIgnoreProperties("user")   
     private Set<Wishlist> wishlists = new HashSet<>();
 }

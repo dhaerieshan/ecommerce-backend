@@ -31,7 +31,6 @@ public class CartController {
             CartDTO cartDTO = new CartDTO(cart);
             return ResponseEntity.ok(cartDTO);
         } catch (Exception e) {
-            // Log the error (use a logger in real applications)
             System.err.println("Error fetching cart: " + e.getMessage());
             return ResponseEntity.status(500).body(null);
         }
@@ -46,7 +45,6 @@ public class CartController {
             cartService.addProductToCart(user, request.getProductId(), request.getQuantity());
             return ResponseEntity.ok("Product added to cart");
         } catch (Exception e) {
-            // Log the error (use a logger in real applications)
             System.err.println("Error adding to cart: " + e.getMessage());
             return ResponseEntity.status(500).body("Error adding product to cart");
         }
@@ -61,7 +59,6 @@ public class CartController {
             cartService.removeProductFromCart(user, request.getProductId());
             return ResponseEntity.ok("Product removed from cart");
         } catch (Exception e) {
-            // Log the error (use a logger in real applications)
             System.err.println("Error removing from cart: " + e.getMessage());
             return ResponseEntity.status(500).body("Error removing product from cart");
         }

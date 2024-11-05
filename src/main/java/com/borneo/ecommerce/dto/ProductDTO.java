@@ -20,14 +20,14 @@ public class ProductDTO {
     private Double price;
 
     @NotNull(message = "Stock is required")
-    private Integer stock; // Ensure this matches your entity's field name
+    private Integer stock;   
 
     private String imagePath;
 
     @NotNull(message = "Category is required")
-    private Long categoryId; // To receive category selection
+    private Long categoryId;
 
-    // Constructors
+
     public ProductDTO() {
     }
 
@@ -36,7 +36,7 @@ public class ProductDTO {
         this.name = product.getName();
         this.description = product.getDescription();
         this.price = product.getPrice();
-        this.stock = product.getStock(); // Ensure consistency
+        this.stock = product.getStock();   
         this.imagePath = product.getImagePath();
         if (product.getCategory() != null) {
             this.categoryId = product.getCategory().getId();

@@ -1,4 +1,4 @@
-// src/main/java/com/borneo/ecommerce/controller/WishlistController.java
+
 
 package com.borneo.ecommerce.controller;
 
@@ -25,7 +25,7 @@ public class WishlistController {
     @Autowired
     private UserService userService;
 
-    // Endpoint to add a product to the wishlist
+
     @PostMapping("/{productId}")
     public ResponseEntity<?> addToWishlist(@PathVariable Long productId, Authentication authentication) {
         try {
@@ -45,7 +45,7 @@ public class WishlistController {
         }
     }
 
-    // Endpoint to remove a product from the wishlist
+
     @DeleteMapping("/{productId}")
     public ResponseEntity<?> removeFromWishlist(@PathVariable Long productId, Authentication authentication) {
         try {
@@ -65,7 +65,7 @@ public class WishlistController {
         }
     }
 
-    // Endpoint to get all products in the wishlist
+
     @GetMapping
     public ResponseEntity<?> getWishlist(Authentication authentication) {
         try {
@@ -80,14 +80,14 @@ public class WishlistController {
         }
     }
 
-    // Helper method to extract user ID from Authentication
+
     private Long getUserId(Authentication authentication) throws Exception {
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new Exception("User not authenticated");
         }
 
-        String username = authentication.getName(); // Extract username
-        User user = userService.findByUsername(username); // Fetch User entity
+        String username = authentication.getName();
+        User user = userService.findByUsername(username);   
 
         if (user != null) {
             return user.getId();

@@ -29,7 +29,7 @@ public class CartServiceImpl implements CartService {
         return cartRepository.findByUser(user).orElseGet(() -> {
             Cart newCart = new Cart();
             newCart.setUser(user);
-            newCart.setItems(new ArrayList<>()); // Initialize items
+            newCart.setItems(new ArrayList<>());   
             return cartRepository.save(newCart);
         });
     }

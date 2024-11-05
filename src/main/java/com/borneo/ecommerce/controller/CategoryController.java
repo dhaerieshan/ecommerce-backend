@@ -2,7 +2,6 @@ package com.borneo.ecommerce.controller;
 
 import com.borneo.ecommerce.dto.CategoryDTO;
 import com.borneo.ecommerce.exception.ResourceNotFoundException;
-import com.borneo.ecommerce.repository.CategoryRepository;
 import com.borneo.ecommerce.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,40 +25,34 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    private final CategoryRepository categoryRepository;
 
     @Value("${app.upload.dir}")
     private String UPLOAD_DIR;
 
-    // Get All Categories
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         List<CategoryDTO> categories = categoryService.getAllCategories();
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
-    // Create a New Category
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
         CategoryDTO createdCategory = categoryService.createCategory(categoryDTO);
         return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
     }
 
-    // Update a Category
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long id, @RequestBody CategoryDTO categoryDTO) {
         CategoryDTO updatedCategory = categoryService.updateCategory(id, categoryDTO);
         return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
     }
 
-    // Delete a Category
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return new ResponseEntity<>("Category deleted successfully.", HttpStatus.OK);
     }
 
-    // Get Category By Id
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
         CategoryDTO categoryDTO = categoryService.getCategoryById(id);
@@ -80,25 +73,19 @@ public class CategoryController {
                 throw new ResourceNotFoundException("Category not found");
             }
 
-            // Create the filename
             String filename = StringUtils.cleanPath(file.getOriginalFilename());
 
-            // Define the upload path
             Path uploadPath = Paths.get(UPLOAD_DIR);
 
-            // Ensure the directory exists
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-            // Save the new image file
             Path filePath = uploadPath.resolve(filename);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            // Update the category's image path
             categoryDTO.setImagePath("/images/" + filename);
 
-            // Now save the updated category
             categoryService.updateCategory(id, categoryDTO);
 
             return ResponseEntity.ok("Image uploaded successfully");
@@ -120,25 +107,19 @@ public class CategoryController {
                 throw new ResourceNotFoundException("Category not found");
             }
 
-            // Create the filename
             String filename = StringUtils.cleanPath(file.getOriginalFilename());
 
-            // Define the upload path
             Path uploadPath = Paths.get(UPLOAD_DIR);
 
-            // Ensure the directory exists
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-            // Save the new image file
             Path filePath = uploadPath.resolve(filename);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            // Update the category's image path
             categoryDTO.setBannerPath("/images/" + filename);
 
-            // Now save the updated category
             categoryService.updateCategory(id, categoryDTO);
 
             return ResponseEntity.ok("Image uploaded successfully");

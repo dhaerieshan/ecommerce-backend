@@ -10,7 +10,6 @@ import java.util.Optional;
 public interface CartRepository extends JpaRepository<Cart, Long> {
 
     @EntityGraph(attributePaths = {"items", "items.product"})
-        // Eagerly fetch items and products
     Optional<Cart> findByUser(User user);
 
     boolean existsByUser(User user);

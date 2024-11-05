@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "`Order`") // Order is a reserved keyword in SQL
+@Table(name = "`Order`")   
 public class Order {
 
     @Id
@@ -26,5 +26,5 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items;
 
-    // Getters and Setters
+
 }

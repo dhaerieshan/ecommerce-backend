@@ -41,17 +41,17 @@ public class newtry {
     }
 
     public static List<String> getUserRolesn(String username) {
-        // Find the user by username
+
         Optional<User> userOptional = Optional.ofNullable(userRepository.findByUsername(username));
 
-        // If user exists, extract and return their roles
+
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             return user.getRoles().stream()
-                    .map(Role::getName)  // Extract role names
+                    .map(Role::getName)    
                     .collect(Collectors.toList());
         }
-        // Return empty list if user is not found
+
         return List.of();
     }
 
