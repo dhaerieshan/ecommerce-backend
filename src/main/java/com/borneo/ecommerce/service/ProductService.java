@@ -22,4 +22,5 @@ public interface ProductService {
 
     List<ProductDTO> findProductsByCategoryAndSubcategories(Long categoryId);
 
+    void reduceStock(Long productId, int quantity);
 }

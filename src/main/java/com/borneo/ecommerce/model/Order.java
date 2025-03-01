@@ -9,22 +9,21 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "`Order`")   
+@Table(name = "`Order`")
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Date orderDate;
-
-    private BigDecimal totalAmount;
-
-    @ManyToOne(optional = false)
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)  // 🔴 User must be non-null
     private User user;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private Date orderDate;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
 
-
+    private BigDecimal totalAmount;
 }

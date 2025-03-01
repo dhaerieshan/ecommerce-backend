@@ -89,6 +89,18 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
 
+    public void reduceStock(Long productId, int quantity) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        if (product.getStock() >= quantity) {
+            product.setStock(product.getStock() - quantity);
+            productRepository.save(product);
+        } else {
+            throw new RuntimeException("Insufficient stock for product: " + productId);
+        }
+    }
+
     @Override
     public ProductDTO getProductById(Long id) {
         Product product = productRepository.findById(id)

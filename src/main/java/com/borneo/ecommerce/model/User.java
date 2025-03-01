@@ -1,9 +1,9 @@
 package com.borneo.ecommerce.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,7 +21,7 @@ public class User {
     private String username;
 
     @Column(nullable = false)
-    private  String password;
+    private String password;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -32,6 +32,18 @@ public class User {
     @Column(length = 50)
     private String lastName;
 
+    @Column(nullable = false) // Added field
+    private String rationCardNumber;
+
+    @Column(nullable = false) // Added field
+    private String address;
+
+    @Column(nullable = false)
+    private LocalDate DOB;
+
+    @Column(nullable = false)
+    private String fatherName;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
@@ -40,8 +52,4 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("user")   
-    private Set<Wishlist> wishlists = new HashSet<>();
 }

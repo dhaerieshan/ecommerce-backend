@@ -33,10 +33,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String jwt = null;
 
         if (header != null && header.startsWith("BEARER ")) {
-            jwt = header.substring(7);   
+            jwt = header.substring(7);
             try {
                 username = jwtUtils.getUserNameFromJwtToken(jwt);
-                logger.debug("Username extracted from JWT: {}");
+                logger.debug("Username extracted from JWT:" + username);
             } catch (Exception e) {
                 logger.error("Cannot extract username from JWT token: {}");
             }
@@ -52,7 +52,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                logger.debug("Authentication set for user: {}");
+                logger.debug("Authentication set for user:" + username);
             } else {
                 logger.error("Invalid JWT token");
             }

@@ -22,10 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -55,6 +53,14 @@ public class AuthController {
     @Value("${vendor.secret.code:defaultVendorCode}")
     private String vendorSecretCode;
 
+    private String generateRandomRationCardNumber() {
+        Random random = new Random();
+        int part1 = 1000 + random.nextInt(9000); // 4-digit number
+        int part2 = 1000 + random.nextInt(9000); // 4-digit number
+        int part3 = 1000 + random.nextInt(9000); // 4-digit number
+        return String.format("%04d-%04d-%04d", part1, part2, part3);
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@RequestBody SignupRequest signupRequest) {
         System.out.println("adminSecretCode: " + adminSecretCode);
@@ -67,10 +73,40 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Error: Email is already in use");
         }
 
+
         User user = new User();
         user.setUsername(signupRequest.getUsername());
         user.setEmail(signupRequest.getEmail());
+        user.setFirstName(signupRequest.getFirstName());
+        user.setLastName(signupRequest.getLastName());
+        user.setFatherName(signupRequest.getFatherName());
+        user.setDOB(signupRequest.getDOB());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+
+
+        if (user.getDOB() == null) {
+            user.setDOB(LocalDate.of(2003, 3, 5));
+        }
+
+
+        if (user.getLastName() == null || user.getLastName().isEmpty()) {
+            user.setLastName("test");
+        }
+
+        if (user.getFirstName() == null || user.getFirstName().isEmpty()) {
+            user.setFirstName("test");
+        }
+
+        if (user.getFatherName() == null || user.getFatherName().isEmpty()) {
+            user.setFatherName("test");
+        }
+
+        if (user.getAddress() == null || user.getAddress().isEmpty()) {
+            user.setAddress("address");
+        }
+        if (user.getRationCardNumber() == null || user.getRationCardNumber().isEmpty()) {
+            user.setRationCardNumber(generateRandomRationCardNumber());
+        }
 
         Set<Role> roles = new HashSet<>();
 
