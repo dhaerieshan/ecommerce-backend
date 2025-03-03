@@ -14,13 +14,15 @@ public class OrderItemDTO {
     private Long orderId;
     private Long productId;
     private String productName;
+    private String productImage; // ✅ Add this field
     private int quantity;
     private BigDecimal price;
 
-    public OrderItemDTO(OrderItem orderItem) {  // ✅ Ensure this constructor exists
+    public OrderItemDTO(OrderItem orderItem) {
         this.orderId = orderItem.getOrder().getId();
         this.productId = orderItem.getProduct().getId();
         this.productName = orderItem.getProduct().getName();
+        this.productImage = orderItem.getProduct().getImagePath(); // ✅ Get image path
         this.quantity = orderItem.getQuantity();
         this.price = orderItem.getPrice();
     }

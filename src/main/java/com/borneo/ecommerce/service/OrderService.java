@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -22,7 +22,7 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final OrderItemRepository orderItemRepository;
 
-    BigDecimal totalAmount = BigDecimal.ZERO;
+
 
     public OrderService(OrderRepository orderRepository, ProductRepository productRepository, OrderItemRepository orderItemRepository) {
         this.orderRepository = orderRepository;
@@ -36,7 +36,11 @@ public class OrderService {
         order.setUser(user);
         order.setOrderDate(new Date());
 
-        List<OrderItem> orderItems = items.stream().map(itemDTO -> {
+        BigDecimal totalAmount = BigDecimal.ZERO; // ✅ Declare totalAmount before lambda
+
+        List<OrderItem> orderItems = new ArrayList<>(); // ✅ Store order items in a list
+
+        for (OrderItem itemDTO : items) {
             OrderItem orderItem = new OrderItem();
             Product product = productRepository.findById(itemDTO.getProductId())
                     .orElseThrow(() -> new RuntimeException("Product not found with ID: " + itemDTO.getProductId()));
@@ -47,25 +51,19 @@ public class OrderService {
             orderItem.setOrder(order); // ✅ Associate with order
 
             BigDecimal itemTotal = BigDecimal.valueOf(product.getPrice()).multiply(BigDecimal.valueOf(itemDTO.getQuantity()));
-            totalAmount = totalAmount.add(itemTotal);
+            totalAmount = totalAmount.add(itemTotal); // ✅ Accumulate total safely
 
-
-            return orderItem;
-        }).collect(Collectors.toList());
-
+            orderItems.add(orderItem); // ✅ Add order item to list
+        }
 
         order.setTotalAmount(totalAmount); // ✅ Set total amount before saving
-
         order.setOrderItems(orderItems);
+
         orderRepository.save(order); // ✅ Save the order first
         orderItemRepository.saveAll(orderItems); // ✅ Save order items after order
 
         return order;
-
-
     }
-
-
     public List<Order> getOrdersByUser(User user) {
         return orderRepository.findByUser(user);
     }
