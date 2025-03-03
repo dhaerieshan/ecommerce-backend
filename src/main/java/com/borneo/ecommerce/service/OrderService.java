@@ -2,47 +2,77 @@ package com.borneo.ecommerce.service;
 
 import com.borneo.ecommerce.model.Order;
 import com.borneo.ecommerce.model.OrderItem;
+import com.borneo.ecommerce.model.Product;
 import com.borneo.ecommerce.model.User;
+import com.borneo.ecommerce.repository.OrderItemRepository;
 import com.borneo.ecommerce.repository.OrderRepository;
 import com.borneo.ecommerce.repository.ProductRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final OrderItemRepository orderItemRepository;
+
+    BigDecimal totalAmount = BigDecimal.ZERO;
+
+    public OrderService(OrderRepository orderRepository, ProductRepository productRepository, OrderItemRepository orderItemRepository) {
+        this.orderRepository = orderRepository;
+        this.productRepository = productRepository;
+        this.orderItemRepository = orderItemRepository;
+    }
 
     @Transactional
     public Order createOrder(User user, List<OrderItem> items) {
-        if (user == null) {
-            throw new IllegalArgumentException("User must not be null");
-        }
-
         Order order = new Order();
-        order.setUser(user);  // 🔴 Ensure the user is set
+        order.setUser(user);
         order.setOrderDate(new Date());
 
-        BigDecimal totalAmount = items.stream()
-                .map(item -> BigDecimal.valueOf(item.getPrice()) // Ensure BigDecimal
-                        .multiply(BigDecimal.valueOf(item.getQuantity()))) // Multiply correctly
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        order.setTotalAmount(totalAmount);
-        order.setItems(items);
+        List<OrderItem> orderItems = items.stream().map(itemDTO -> {
+            OrderItem orderItem = new OrderItem();
+            Product product = productRepository.findById(itemDTO.getProductId())
+                    .orElseThrow(() -> new RuntimeException("Product not found with ID: " + itemDTO.getProductId()));
 
-        items.forEach(item -> item.setOrder(order));  // 🔴 Ensure each item links back to the order
+            orderItem.setProduct(product);
+            orderItem.setQuantity(itemDTO.getQuantity());
+            orderItem.setPrice(BigDecimal.valueOf(product.getPrice()));
+            orderItem.setOrder(order); // ✅ Associate with order
 
-        return orderRepository.save(order);
+            BigDecimal itemTotal = BigDecimal.valueOf(product.getPrice()).multiply(BigDecimal.valueOf(itemDTO.getQuantity()));
+            totalAmount = totalAmount.add(itemTotal);
+
+
+            return orderItem;
+        }).collect(Collectors.toList());
+
+
+        order.setTotalAmount(totalAmount); // ✅ Set total amount before saving
+
+        order.setOrderItems(orderItems);
+        orderRepository.save(order); // ✅ Save the order first
+        orderItemRepository.saveAll(orderItems); // ✅ Save order items after order
+
+        return order;
+
+
     }
 
-    public List<Order> getUserOrders(User user) {
+
+    public List<Order> getOrdersByUser(User user) {
         return orderRepository.findByUser(user);
+    }
+
+    // ✅ Fetch a single order by ID
+    public Order getOrderById(Long orderId, User user) {
+        return orderRepository.findByIdAndUser(orderId, user)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
     }
 }

@@ -16,14 +16,14 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)  // 🔴 User must be non-null
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<OrderItem> orderItems;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date orderDate;
+    private BigDecimal totalAmount;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private Date orderDate;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> items;
-
-    private BigDecimal totalAmount;
 }
