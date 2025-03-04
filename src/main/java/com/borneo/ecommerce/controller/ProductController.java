@@ -23,9 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -65,6 +63,27 @@ public class ProductController {
     }
 
 
+    @GetMapping("/featured")
+    public List<ProductDTO> featured() {
+        List<ProductDTO> allProducts = productService.getAllProducts();
+
+        // Group products by category
+        Map<Long, List<ProductDTO>> categoryMap = allProducts.stream()
+                .collect(Collectors.groupingBy(ProductDTO::getCategoryId));
+
+        List<ProductDTO> featuredProducts = new ArrayList<>();
+        Random random = new Random();
+
+        // Pick one random product from each category (up to 4 products total)
+        for (List<ProductDTO> products : categoryMap.values()) {
+            if (!products.isEmpty()) {
+                featuredProducts.add(products.get(random.nextInt(products.size())));
+            }
+            if (featuredProducts.size() >= 4) break; // Stop when we have 4 products
+        }
+
+        return featuredProducts;
+    }
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
         try {
