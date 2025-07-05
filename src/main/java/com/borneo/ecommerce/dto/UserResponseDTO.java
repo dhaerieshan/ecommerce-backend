@@ -25,7 +25,6 @@ public class UserResponseDTO {
 
     private String firstName;
     private String lastName;
-    private String rationCardNumber;
     private String address;
 
     private String fatherName;

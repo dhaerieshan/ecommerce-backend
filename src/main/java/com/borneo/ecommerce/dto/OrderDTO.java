@@ -12,20 +12,25 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class OrderDTO {
-    private Long id;
+    private Long id;  // DB ID if you still want it
+    private String displayOrderNumber; // ✅ NEW
     private Date orderDate;
     private Long userId;
+    private BigDecimal totalAmount;
+    private String status;
     private List<OrderItemDTO> items;
-    private BigDecimal totalAmount;  // ⚠️ Fix capitalization (was "TotalAmount")
 
-    // ✅ Add a constructor that accepts an Order object
+    // ✅ Constructor
     public OrderDTO(Order order) {
         this.id = order.getId();
+        this.displayOrderNumber = order.getDisplayOrderNumber();
         this.orderDate = order.getOrderDate();
-        this.userId = order.getUser().getId();  // Assuming Order has a getUser() method
-        this.items = order.getOrderItems().stream().map(OrderItemDTO::new).collect(Collectors.toList());
+        this.userId = order.getUser().getId();
         this.totalAmount = order.getTotalAmount();
+        this.status = order.getStatus();
+        this.items = order.getOrderItems().stream().map(OrderItemDTO::new).collect(Collectors.toList());
     }
+
 
     // ✅ No-argument constructor (needed for frameworks like Jackson)
     public OrderDTO() {

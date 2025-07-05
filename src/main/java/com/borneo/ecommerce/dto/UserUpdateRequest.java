@@ -20,7 +20,6 @@ public class UserUpdateRequest {
 
     private String firstName;
     private String lastName;
-    private String rationCardNumber;
     private String address;
 
     private String fatherName;

@@ -33,8 +33,6 @@ public class User {
     @Column(length = 50)
     private String lastName;
 
-    @Column(nullable = false) // Added field
-    private String rationCardNumber;
 
     @Column(nullable = false) // Added field
     private String address;

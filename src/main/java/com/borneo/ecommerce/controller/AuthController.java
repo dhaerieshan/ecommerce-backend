@@ -23,7 +23,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -53,13 +56,6 @@ public class AuthController {
     @Value("${vendor.secret.code:defaultVendorCode}")
     private String vendorSecretCode;
 
-    private String generateRandomRationCardNumber() {
-        Random random = new Random();
-        int part1 = 1000 + random.nextInt(9000); // 4-digit number
-        int part2 = 1000 + random.nextInt(9000); // 4-digit number
-        int part3 = 1000 + random.nextInt(9000); // 4-digit number
-        return String.format("%04d-%04d-%04d", part1, part2, part3);
-    }
 
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@RequestBody SignupRequest signupRequest) {
@@ -104,9 +100,7 @@ public class AuthController {
         if (user.getAddress() == null || user.getAddress().isEmpty()) {
             user.setAddress("address");
         }
-        if (user.getRationCardNumber() == null || user.getRationCardNumber().isEmpty()) {
-            user.setRationCardNumber(generateRandomRationCardNumber());
-        }
+
 
         Set<Role> roles = new HashSet<>();
 

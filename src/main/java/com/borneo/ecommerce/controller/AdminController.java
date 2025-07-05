@@ -117,9 +117,6 @@ public class AdminController {
         if (updateRequest.getPassword() != null && !updateRequest.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(updateRequest.getPassword()));
         }
-        if (updateRequest.getRationCardNumber() != null && !Objects.equals(user.getRationCardNumber(), updateRequest.getRationCardNumber())) {
-            user.setRationCardNumber(updateRequest.getRationCardNumber());
-        }
         if (updateRequest.getAddress() != null && !Objects.equals(user.getAddress(), updateRequest.getAddress())) {
             user.setAddress(updateRequest.getAddress());
         }
@@ -137,7 +134,7 @@ public class AdminController {
         dto.setRoles(user.getRoles().stream().map(Role::getName).collect(Collectors.toSet())); // Convert roles properly
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
-        dto.setRationCardNumber(user.getRationCardNumber());
+
         dto.setAddress(user.getAddress());
         dto.setFatherName(user.getFatherName());
         dto.setDOB(user.getDOB());  // ✅ Ensure Date Is Set

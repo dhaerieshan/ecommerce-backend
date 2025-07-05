@@ -54,7 +54,6 @@ public class UserController {
         profile.setEmail(user.getEmail());
         profile.setFirstName(user.getFirstName());
         profile.setLastName(user.getLastName());
-        profile.setRationCardNumber(user.getRationCardNumber());
         profile.setAddress(user.getAddress());
         profile.setDOB(user.getDOB());
         profile.setFatherName(user.getFatherName());
@@ -98,9 +97,6 @@ public class UserController {
         }
         if (updateRequest.getPassword() != null && !updateRequest.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(updateRequest.getPassword()));
-        }
-        if (updateRequest.getRationCardNumber() != null) {
-            user.setRationCardNumber(updateRequest.getRationCardNumber());
         }
         if (updateRequest.getAddress() != null) {
             user.setAddress(updateRequest.getAddress());

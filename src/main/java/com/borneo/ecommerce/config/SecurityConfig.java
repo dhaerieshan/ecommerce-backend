@@ -66,7 +66,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN")
                         .requestMatchers("/api/vendor/**").hasAnyAuthority("VENDOR")
                         .requestMatchers("/api/user/me").hasAuthority("USER")
-                        .requestMatchers("/images/**").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers("/images/**").permitAll()
                         .requestMatchers("/api/cart/**").permitAll()
                         .requestMatchers("/api/categories/**").permitAll()
                         .requestMatchers("/api/products/**").permitAll()

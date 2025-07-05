@@ -25,5 +25,11 @@ public class Order {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(unique = true)
+    private String displayOrderNumber;
+
+    @Column(name = "status")
+    private String status;  // e.g., "In progress", "CANCELLED"
+
 
 }

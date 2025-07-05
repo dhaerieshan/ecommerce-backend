@@ -36,6 +36,8 @@ public class OrderController {
         // ✅ Pass OrderItemDTOs to createOrder()
         Order order = orderService.createOrder(user, item);
 
+        order.setStatus("in progress");
+
         // ✅ Convert Order to OrderDTO
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.setId(order.getId());
@@ -63,7 +65,7 @@ public class OrderController {
         User user = userService.findByUsername(authUser.getUsername());
         List<OrderDTO> orders = orderService.getOrdersByUser(user)
                 .stream()
-                .map(OrderDTO::new)  // ✅ Now it works because OrderDTO(Order order) exists
+                .map(OrderDTO::new)  // ✅ Uses the constructor above, so displayOrderNumber is included!
                 .collect(Collectors.toList());
         return ResponseEntity.ok(orders);
     }
@@ -72,6 +74,17 @@ public class OrderController {
     public ResponseEntity<OrderDTO> getOrderById(@AuthenticationPrincipal UserDetails authUser, @PathVariable Long orderId) {
         User user = userService.findByUsername(authUser.getUsername());
         Order order = orderService.getOrderById(orderId, user);
-        return ResponseEntity.ok(new OrderDTO(order));  // ✅ Works now!
+        return ResponseEntity.ok(new OrderDTO(order));  // ✅ Again, displayOrderNumber included
+    }
+
+    @DeleteMapping("/{orderId}/cancel")
+    public ResponseEntity<?> cancelOrder(
+            @AuthenticationPrincipal UserDetails authUser,
+            @PathVariable Long orderId) {
+
+        User user = userService.findByUsername(authUser.getUsername());
+        orderService.cancelOrder(orderId, user);
+
+        return ResponseEntity.ok("Order cancelled successfully");
     }
 }

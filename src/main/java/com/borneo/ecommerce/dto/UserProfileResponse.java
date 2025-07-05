@@ -10,7 +10,6 @@ public class UserProfileResponse {
     private String email;
     private String firstName;
     private String lastName;
-    private String rationCardNumber;
     private String address;
     private LocalDate DOB;
     private String fatherName;
