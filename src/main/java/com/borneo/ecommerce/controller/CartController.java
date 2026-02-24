@@ -3,11 +3,8 @@ package com.borneo.ecommerce.controller;
 import com.borneo.ecommerce.dto.AddToCartRequest;
 import com.borneo.ecommerce.dto.CartDTO;
 import com.borneo.ecommerce.dto.RemoveFromCartRequest;
-import com.borneo.ecommerce.model.Cart;
 import com.borneo.ecommerce.model.User;
 import com.borneo.ecommerce.service.CartService;
-import com.borneo.ecommerce.service.OrderService;
-import com.borneo.ecommerce.service.ProductService;
 import com.borneo.ecommerce.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,14 +19,6 @@ public class CartController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private OrderService orderService;
-
-
-    @Autowired
-    private ProductService productService; // Service to update product stock
-
 
     @Autowired
     private CartService cartService;
@@ -86,20 +75,4 @@ public class CartController {
         }
     }
 
-//    @PostMapping("/checkout")
-//    public ResponseEntity<OrderResponse> checkoutCart(@AuthenticationPrincipal User user) {
-//        Cart cart = cartService.getCartByUser(user); // Get the cart
-//        List<OrderItem> cartItems = cart.getItems().stream()
-//                .map(OrderItem::new) // Convert each CartItem to OrderItem
-//                .collect(Collectors.toList());
-//
-//        if (cartItems.isEmpty()) {
-//            return ResponseEntity.badRequest().body(null);
-//        }
-//
-//        Order order = orderService.createOrder(user, cartItems);
-//        cartService.clearCart(user);
-//        return ResponseEntity.ok(new OrderResponse(order)); // Ensure OrderResponse has a constructor for Order
-//    }
-    // Other methods...
 }

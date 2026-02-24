@@ -20,13 +20,14 @@ public class ProductDTO {
     private int price;
 
     @NotNull(message = "Stock is required")
-    private Integer stock;   
+    private Integer stock;
 
     private String imagePath;
 
     @NotNull(message = "Category is required")
     private Long categoryId;
 
+    private String barcodeNumber; // ✅ new column
 
     public ProductDTO() {
     }
@@ -36,8 +37,9 @@ public class ProductDTO {
         this.name = product.getName();
         this.description = product.getDescription();
         this.price = product.getPrice();
-        this.stock = product.getStock();   
+        this.stock = product.getStock();
         this.imagePath = product.getImagePath();
+        this.barcodeNumber = product.getBarcodeNumber();
         if (product.getCategory() != null) {
             this.categoryId = product.getCategory().getId();
         }

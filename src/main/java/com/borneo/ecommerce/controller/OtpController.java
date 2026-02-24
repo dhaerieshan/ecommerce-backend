@@ -10,27 +10,23 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 import java.util.Random;
 
-
 @RestController
 @RequestMapping("/api/otp")
 public class OtpController {
 
-    private static final long OTP_EXPIRY_TIME_MS = 5 * 60 * 1000; // 5 minutes
     @Autowired
     private EmailService emailService;
 
-    public String createOtp() {
-        String otp;
-        return otp = String.valueOf(new Random().nextInt(900000) + 100000);
-
+    private String createOtp() {
+        return String.valueOf(new Random().nextInt(900000) + 100000);
     }
 
     @PostMapping("/send")
     public String sendOtp(@RequestBody Map<String, String> request) {
         String email = request.get("email");
-        String Otp = createOtp();
-        emailService.sendOtp(email, Otp);
-        return "OTP is" + Otp;
+        String otp = createOtp();
+        emailService.sendOtp(email, otp);
+        return "OTP sent successfully";  // Never expose OTP in response
     }
 
     @PostMapping("/verify")

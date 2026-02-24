@@ -6,7 +6,6 @@ import com.borneo.ecommerce.model.Category;
 import com.borneo.ecommerce.model.Product;
 import com.borneo.ecommerce.repository.CategoryRepository;
 import com.borneo.ecommerce.repository.ProductRepository;
-import com.borneo.ecommerce.repository.UserRepository;
 import com.borneo.ecommerce.service.ProductMapper;
 import com.borneo.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +37,6 @@ public class ProductController {
 
     @Autowired
     private ProductRepository productRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -196,14 +192,4 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/category/{id}")
-    public ResponseEntity<List<ProductDTO>> getProductsByCategoryId(@PathVariable Long id) {
-        try {
-
-            List<ProductDTO> products = productService.findProductsByCategoryAndSubcategories(id);
-            return ResponseEntity.ok(products);
-        } catch (ResourceNotFoundException ex) {
-            return ResponseEntity.status(404).body(null);
-        }
-    }
 }

@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Application secrets - never commit
+src/main/resources/application.properties
+
+# Upload directory
+/images/

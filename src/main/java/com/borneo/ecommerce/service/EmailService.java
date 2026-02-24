@@ -13,16 +13,18 @@ public class EmailService {
 
     private static final long OTP_EXPIRY_TIME_MS = 5 * 60 * 1000; // 5 minutes
     private final Map<String, OtpData> otpStorage = new HashMap<>();
+
     @Autowired
     private JavaMailSender mailSender;
 
     public void sendOtp(String email, String otp) {
+        // Store OTP before sending
+        otpStorage.put(email, new OtpData(otp, System.currentTimeMillis()));
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setSubject("Your OTP Code");
         message.setText("Your OTP is: " + otp + ". It will expire in 5 minutes.");
-
         mailSender.send(message);
     }
 
@@ -30,22 +32,20 @@ public class EmailService {
         OtpData otpData = otpStorage.get(email);
 
         if (otpData == null) {
-            return false; // ❌ OTP not found
+            return false;
         }
 
-        // Check if OTP has expired
         if (System.currentTimeMillis() - otpData.timestamp > OTP_EXPIRY_TIME_MS) {
-            otpStorage.remove(email); // ✅ Delete expired OTP
-            return false; // ❌ OTP expired
+            otpStorage.remove(email);
+            return false;
         }
 
-        // Check if OTP matches
         if (otpData.otp.equals(otp)) {
-            otpStorage.remove(email); // ✅ Delete OTP after successful verification
+            otpStorage.remove(email);
             return true;
         }
 
-        return false; // ❌ Invalid OTP
+        return false;
     }
 
     private static class OtpData {
