@@ -59,18 +59,18 @@ public class OrderService {
         order.setTotalAmount(totalAmount);
         order.setOrderItems(orderItems);
 
-        // ✅ Save once to generate ID
+        //   Save once to generate ID
         Order savedOrder = orderRepository.save(order);
 
-        // ✅ Now the ID exists, so build displayOrderNumber correctly
+        //   Now the ID exists, so build displayOrderNumber correctly
         String randomPart = String.format("%04d", (int) (Math.random() * 10000));
         String idPart = String.format("%02d", savedOrder.getId());
         savedOrder.setDisplayOrderNumber(randomPart + idPart);
 
-        // ✅ Save again with the displayOrderNumber
+        //   Save again with the displayOrderNumber
         savedOrder = orderRepository.save(savedOrder);
 
-        // ✅ Save the items too
+        //   Save the items too
         orderItemRepository.saveAll(orderItems);
 
         return savedOrder;
@@ -79,7 +79,7 @@ public class OrderService {
         return orderRepository.findByUserOrderByOrderDateDesc(user);
     }
 
-    // ✅ Fetch a single order by ID
+    //   Fetch a single order by ID
     public Order getOrderById(Long orderId, User user) {
         return orderRepository.findByIdAndUser(orderId, user)
                 .orElseThrow(() -> new RuntimeException("Order not found"));

@@ -15,7 +15,7 @@ public class OrderItem {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "product_id", nullable = false)
-    private Product product; // ✅ Ensure this is mapped correctly
+    private Product product; //   Ensure this is mapped correctly
 
     private int quantity;
 
@@ -23,7 +23,7 @@ public class OrderItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
-    private Order order; // ✅ Ensure this is mapped to the order
+    private Order order; //   Ensure this is mapped to the order
 
     public Long getProductId() {
         return product.getId();

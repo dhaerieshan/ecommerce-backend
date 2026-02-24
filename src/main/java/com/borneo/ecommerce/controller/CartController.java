@@ -3,6 +3,7 @@ package com.borneo.ecommerce.controller;
 import com.borneo.ecommerce.dto.AddToCartRequest;
 import com.borneo.ecommerce.dto.CartDTO;
 import com.borneo.ecommerce.dto.RemoveFromCartRequest;
+import com.borneo.ecommerce.model.Cart;
 import com.borneo.ecommerce.model.User;
 import com.borneo.ecommerce.service.CartService;
 import com.borneo.ecommerce.service.UserService;

@@ -77,7 +77,7 @@ public class AdminController {
 
     @PatchMapping("/update/{id}")
     public ResponseEntity<?> userUpdate(
-            @PathVariable Long id,  // ✅ Extract id from URL path
+            @PathVariable Long id,  //   Extract id from URL path
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody UserUpdateRequest updateRequest
     ) {
@@ -137,7 +137,7 @@ public class AdminController {
 
         dto.setAddress(user.getAddress());
         dto.setFatherName(user.getFatherName());
-        dto.setDOB(user.getDOB());  // ✅ Ensure Date Is Set
+        dto.setDOB(user.getDOB());  //   Ensure Date Is Set
         return dto;
     }
 }

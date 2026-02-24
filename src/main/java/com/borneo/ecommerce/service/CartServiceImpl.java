@@ -39,8 +39,8 @@ public class CartServiceImpl implements CartService {
     public void clearCart(User user) {
         Cart cart = getCartByUser(user);
         if (cart != null) {
-            cart.getItems().clear(); // ✅ Just removes items
-            cartRepository.save(cart);   // ✅ Cart remains in DB
+            cart.getItems().clear(); //   Just removes items
+            cartRepository.save(cart);   //   Cart remains in DB
         }
     }
 

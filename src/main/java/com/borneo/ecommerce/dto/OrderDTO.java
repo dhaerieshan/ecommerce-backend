@@ -13,14 +13,14 @@ import java.util.stream.Collectors;
 @Setter
 public class OrderDTO {
     private Long id;  // DB ID if you still want it
-    private String displayOrderNumber; // ✅ NEW
+    private String displayOrderNumber; //   NEW
     private Date orderDate;
     private Long userId;
     private BigDecimal totalAmount;
     private String status;
     private List<OrderItemDTO> items;
 
-    // ✅ Constructor
+    //   Constructor
     public OrderDTO(Order order) {
         this.id = order.getId();
         this.displayOrderNumber = order.getDisplayOrderNumber();
@@ -32,7 +32,7 @@ public class OrderDTO {
     }
 
 
-    // ✅ No-argument constructor (needed for frameworks like Jackson)
+    //   No-argument constructor (needed for frameworks like Jackson)
     public OrderDTO() {
     }
 }
