@@ -40,9 +40,6 @@ public class User {
     @Column(nullable = false)
     private LocalDate DOB;
 
-    @Column(nullable = false)
-    private String fatherName;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",

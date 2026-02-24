@@ -68,7 +68,6 @@ public class AuthController {
         user.setEmail(signupRequest.getEmail());
         user.setFirstName(signupRequest.getFirstName());
         user.setLastName(signupRequest.getLastName());
-        user.setFatherName(signupRequest.getFatherName());
         user.setDOB(signupRequest.getDOB());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
 
@@ -86,9 +85,6 @@ public class AuthController {
             user.setFirstName("test");
         }
 
-        if (user.getFatherName() == null || user.getFatherName().isEmpty()) {
-            user.setFatherName("test");
-        }
 
         if (user.getAddress() == null || user.getAddress().isEmpty()) {
             user.setAddress("address");

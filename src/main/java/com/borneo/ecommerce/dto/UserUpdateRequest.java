@@ -22,7 +22,6 @@ public class UserUpdateRequest {
     private String lastName;
     private String address;
 
-    private String fatherName;
     private LocalDate DOB;
 
 }

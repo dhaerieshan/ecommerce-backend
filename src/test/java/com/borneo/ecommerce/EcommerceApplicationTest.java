@@ -1,7 +1,6 @@
 package com.borneo.ecommerce;
 
 import com.borneo.ecommerce.dto.LoginRequest;
-import com.borneo.ecommerce.dto.SignupRequest;
 import com.borneo.ecommerce.dto.UserUpdateRequest;
 import com.borneo.ecommerce.model.Role;
 import com.borneo.ecommerce.model.User;
@@ -100,8 +99,6 @@ public class EcommerceApplicationTest {
 
 		UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
 		userUpdateRequest.setUsername("User");
-		userUpdateRequest.setOldPassword("user");
-		userUpdateRequest.setNewPassword("newpass");
 
 		mockMvc.perform(get("/api/user/update")
 						.header("Authorization", "BEARER " + token)

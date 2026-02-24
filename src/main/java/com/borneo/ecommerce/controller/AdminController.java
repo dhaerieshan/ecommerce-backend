@@ -102,9 +102,7 @@ public class AdminController {
         if (updateRequest.getLastName() != null && !Objects.equals(user.getLastName(), updateRequest.getLastName())) {
             user.setLastName(updateRequest.getLastName());
         }
-        if (updateRequest.getFatherName() != null && !Objects.equals(user.getFatherName(), updateRequest.getFatherName())) {
-            user.setFatherName(updateRequest.getFatherName());
-        }
+
         if (updateRequest.getDOB() != null && !Objects.equals(user.getDOB(), updateRequest.getDOB())) {
             user.setDOB(updateRequest.getDOB());
         }
@@ -136,7 +134,6 @@ public class AdminController {
         dto.setLastName(user.getLastName());
 
         dto.setAddress(user.getAddress());
-        dto.setFatherName(user.getFatherName());
         dto.setDOB(user.getDOB());  //   Ensure Date Is Set
         return dto;
     }

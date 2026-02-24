@@ -56,7 +56,6 @@ public class UserController {
         profile.setLastName(user.getLastName());
         profile.setAddress(user.getAddress());
         profile.setDOB(user.getDOB());
-        profile.setFatherName(user.getFatherName());
         return ResponseEntity.ok(profile);
     }
 
@@ -83,9 +82,7 @@ public class UserController {
         if (updateRequest.getLastName() != null) {
             user.setLastName(updateRequest.getLastName());
         }
-        if (updateRequest.getFatherName() != null) {
-            user.setFatherName(updateRequest.getFatherName());
-        }
+
         if (updateRequest.getDOB() != null) {
             user.setDOB(updateRequest.getDOB());
         }

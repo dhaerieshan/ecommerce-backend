@@ -12,5 +12,4 @@ public class UserProfileResponse {
     private String lastName;
     private String address;
     private LocalDate DOB;
-    private String fatherName;
 }

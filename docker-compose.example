@@ -1,0 +1,46 @@
+
+services:
+
+  # ─── PostgreSQL Database ───────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: ecommerce-db
+    environment:
+      POSTGRES_DB: ecommerce
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"   # Use 5433 on host to avoid conflict if you have local Postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Spring Boot Application ───────────────────────────────────────────────
+  app:
+    build: .
+    container_name: ecommerce-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/ecommerce
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      APP_JWT_SECRET: local-dev-jwt-secret-key-minimum-32-chars-long
+      SPRING_MAIL_USERNAME: your-gmail@gmail.com
+      SPRING_MAIL_PASSWORD: your-app-password
+      ADMIN_SECRET_CODE: your-admin-code
+      VENDOR_SECRET_CODE: your-vendor-code
+      APP_UPLOAD_DIR: /app/images/
+    volumes:
+      - upload_data:/app/images
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  upload_data:
