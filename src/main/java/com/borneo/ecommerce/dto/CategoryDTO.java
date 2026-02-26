@@ -1,6 +1,7 @@
 package com.borneo.ecommerce.dto;
 
 import com.borneo.ecommerce.model.Category;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,15 +12,26 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "Category details")
 public class CategoryDTO {
 
+    @Schema(description = "Category ID", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
-    private String name;
-    private String imagePath;
-    private String bannerPath;
-    private Long parentId;
-    private List<CategoryDTO> children;
 
+    @Schema(description = "Category name", example = "Electronics")
+    private String name;
+
+    @Schema(description = "Category image path", example = "/images/electronics.jpg", accessMode = Schema.AccessMode.READ_ONLY)
+    private String imagePath;
+
+    @Schema(description = "Category banner image path", example = "/images/electronics-banner.jpg", accessMode = Schema.AccessMode.READ_ONLY)
+    private String bannerPath;
+
+    @Schema(description = "Parent category ID (null if root category)", example = "null")
+    private Long parentId;
+
+    @Schema(description = "List of subcategories under this category")
+    private List<CategoryDTO> children;
 
     public CategoryDTO(Category category) {
         this.id = category.getId();
@@ -31,6 +43,4 @@ public class CategoryDTO {
                 ? category.getSubcategories().stream().map(CategoryDTO::new).collect(Collectors.toList())
                 : null;
     }
-
-
 }

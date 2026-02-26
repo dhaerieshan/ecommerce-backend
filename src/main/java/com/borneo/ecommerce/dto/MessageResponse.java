@@ -1,7 +1,11 @@
 package com.borneo.ecommerce.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Generic message response")
 public class MessageResponse {
 
+    @Schema(description = "Response message", example = "Operation completed successfully")
     private String message;
 
     public MessageResponse(String message) {

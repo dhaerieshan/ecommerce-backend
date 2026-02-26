@@ -34,8 +34,6 @@ public class Product {
     @JsonBackReference
     private Category category;
 
-    private String barcodeNumber; //   new column
-
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("product")   
     private Set<Wishlist> wishlists = new HashSet<>();
