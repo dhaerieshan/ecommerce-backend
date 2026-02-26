@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Tag(name = "09. Orders", description = "Order creation, tracking, and management APIs")
-@SecurityRequirement(name = "bearerAuth")
+
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
@@ -37,7 +37,6 @@ public class OrderController {
     @Operation(
             summary = "Checkout and place order",
             description = "Places a new order from the user's current cart with shipping and payment details",
-            tags = {"Orders"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "201", description = "Order placed successfully",
@@ -83,7 +82,6 @@ public class OrderController {
     @Operation(
             summary = "Get all orders",
             description = "Returns paginated orders. Admins see all orders; users see only their own.",
-            tags = {"Orders"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Orders retrieved successfully",
@@ -104,7 +102,6 @@ public class OrderController {
     @Operation(
             summary = "Get order by ID",
             description = "Fetches full details of a specific order by its ID",
-            tags = {"Orders"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Order found",
@@ -122,7 +119,6 @@ public class OrderController {
     @Operation(
             summary = "Cancel an order",
             description = "Cancels a pending or confirmed order. Cannot cancel shipped/delivered orders.",
-            tags = {"Orders"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Order cancelled successfully",

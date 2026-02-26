@@ -18,7 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "07. Cart", description = "Shopping cart management APIs")
-@SecurityRequirement(name = "bearerAuth")
+
 @RestController
 @RequestMapping("/api/cart")
 public class CartController {
@@ -32,7 +32,6 @@ public class CartController {
     @Operation(
             summary = "Add item to cart",
             description = "Adds a product with specified quantity to the user's cart",
-            tags = {"Cart"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Item added to cart",
@@ -41,7 +40,7 @@ public class CartController {
                     @ApiResponse(responseCode = "404", description = "Product not found")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @PostMapping("/add")
     public ResponseEntity<?> addToCart(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -59,7 +58,6 @@ public class CartController {
     @Operation(
             summary = "Remove item from cart",
             description = "Removes a specific product from the user's cart by product ID",
-            tags = {"Cart"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Item removed from cart",
@@ -67,7 +65,7 @@ public class CartController {
                     @ApiResponse(responseCode = "404", description = "Product not found in cart")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @DeleteMapping("/remove")
     public ResponseEntity<?> removeFromCart(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -85,7 +83,6 @@ public class CartController {
     @Operation(
             summary = "Get current user's cart",
             description = "Retrieves all items currently in the authenticated user's shopping cart",
-            tags = {"Cart"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Cart retrieved successfully",
@@ -93,7 +90,7 @@ public class CartController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @GetMapping
     public ResponseEntity<CartDTO> getCart(@AuthenticationPrincipal UserDetails userDetails) {
         try {
@@ -110,7 +107,6 @@ public class CartController {
     @Operation(
             summary = "Clear entire cart",
             description = "Removes all items from the authenticated user's cart",
-            tags = {"Cart"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Cart cleared successfully",
@@ -118,7 +114,7 @@ public class CartController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @DeleteMapping("/clear")
     public ResponseEntity<?> clearCart(@AuthenticationPrincipal UserDetails userDetails) {
         try {

@@ -48,7 +48,6 @@ public class CategoryController {
     @Operation(
             summary = "Create a new category",
             description = "Creates a new product category. Admin/Vendor only.",
-            tags = {"Category Management"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "201", description = "Category created successfully",
@@ -56,7 +55,7 @@ public class CategoryController {
                     @ApiResponse(responseCode = "400", description = "Invalid input data")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @PreAuthorize("hasAnyAuthority('ADMIN','VENDOR')")
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
@@ -67,7 +66,6 @@ public class CategoryController {
     @Operation(
             summary = "Upload category image",
             description = "Uploads and assigns an image to the specified category",
-            tags = {"Category Management"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Image uploaded successfully",
@@ -75,7 +73,7 @@ public class CategoryController {
                     @ApiResponse(responseCode = "400", description = "Invalid file format")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @PreAuthorize("hasAnyAuthority('ADMIN','VENDOR')")
     @PostMapping("/{id}/upload-image")
     public ResponseEntity<?> uploadImage(@PathVariable Long id, @RequestParam("image") MultipartFile file) {
@@ -114,7 +112,6 @@ public class CategoryController {
     @Operation(
             summary = "Upload category page banner",
             description = "Uploads and assigns a banner image to the category's page",
-            tags = {"Category Management"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Banner uploaded successfully",
@@ -122,7 +119,7 @@ public class CategoryController {
                     @ApiResponse(responseCode = "400", description = "Invalid file format")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+  
     @PreAuthorize("hasAnyAuthority('ADMIN','VENDOR')")
     @PostMapping("/{id}/upload-banner")
     public ResponseEntity<?> uploadBanner(@PathVariable Long id, @RequestParam("banner") MultipartFile file) {
@@ -161,7 +158,6 @@ public class CategoryController {
     @Operation(
             summary = "Get category by ID",
             description = "Fetches a single category and its subcategories by ID",
-            tags = {"Category Management"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "Category found",
                             content = @Content(schema = @Schema(implementation = CategoryDTO.class))),
@@ -178,7 +174,6 @@ public class CategoryController {
     @Operation(
             summary = "Get subcategory by ID",
             description = "Fetches a specific subcategory within a parent category",
-            tags = {"Category Management"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "Subcategory found",
                             content = @Content(schema = @Schema(implementation = Category.class))),
@@ -194,7 +189,6 @@ public class CategoryController {
     @Operation(
             summary = "Update category",
             description = "Updates an existing category's name, description, or other details",
-            tags = {"Category Management"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Category updated successfully",
@@ -202,7 +196,7 @@ public class CategoryController {
                     @ApiResponse(responseCode = "404", description = "Category not found")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @PreAuthorize("hasAnyAuthority('ADMIN','VENDOR')")
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long id, @RequestBody CategoryDTO categoryDTO) {
@@ -213,7 +207,6 @@ public class CategoryController {
     @Operation(
             summary = "Delete category",
             description = "Permanently deletes a category and its associated subcategories. Admin only.",
-            tags = {"Category Management"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Category deleted successfully",
@@ -221,7 +214,7 @@ public class CategoryController {
                     @ApiResponse(responseCode = "404", description = "Category not found")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @PreAuthorize("hasAnyAuthority('ADMIN','VENDOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long id) {

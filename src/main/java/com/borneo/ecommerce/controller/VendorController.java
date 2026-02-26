@@ -18,7 +18,6 @@ public class VendorController {
     @Operation(
             summary = "Get vendor dashboard",
             description = "Returns dashboard summary for the authenticated vendor including products and revenue",
-            tags = {"Profile & Dashboard"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Vendor dashboard data retrieved",
@@ -26,7 +25,7 @@ public class VendorController {
                     @ApiResponse(responseCode = "403", description = "Access restricted to vendors only")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @GetMapping("/dashboard")
     public String vendorDashboard() {
         return "Welcome to the Vendor Dashboard!";

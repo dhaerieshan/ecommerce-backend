@@ -35,7 +35,6 @@ public class WishlistController {
     @Operation(
             summary = "Add product to wishlist",
             description = "Saves a product to the authenticated user's wishlist",
-            tags = {"Wishlist"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Product added to wishlist",
@@ -44,7 +43,7 @@ public class WishlistController {
                     @ApiResponse(responseCode = "409", description = "Product already in wishlist")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @PostMapping("/{productId}")
     public ResponseEntity<?> addToWishlist(@PathVariable Long productId, Authentication authentication) {
         try {
@@ -67,7 +66,6 @@ public class WishlistController {
     @Operation(
             summary = "Get user's wishlist",
             description = "Returns all products saved in the authenticated user's wishlist",
-            tags = {"Wishlist"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Wishlist retrieved successfully",
@@ -75,7 +73,7 @@ public class WishlistController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @GetMapping
     public ResponseEntity<?> getWishlist(Authentication authentication) {
         try {
@@ -94,7 +92,6 @@ public class WishlistController {
     @Operation(
             summary = "Remove product from wishlist",
             description = "Removes a specific product from the user's wishlist",
-            tags = {"Wishlist"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Product removed from wishlist",
@@ -102,7 +99,7 @@ public class WishlistController {
                     @ApiResponse(responseCode = "404", description = "Product not found in wishlist")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @DeleteMapping("/{productId}")
     public ResponseEntity<?> removeFromWishlist(@PathVariable Long productId, Authentication authentication) {
         try {

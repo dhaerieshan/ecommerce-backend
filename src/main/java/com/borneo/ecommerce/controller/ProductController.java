@@ -54,7 +54,6 @@ public class ProductController {
     @Operation(
             summary = "Create a new product",
             description = "Creates a new product listing. Vendor/Admin only.",
-            tags = {"Product Management"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "201", description = "Product created successfully",
@@ -62,7 +61,7 @@ public class ProductController {
                     @ApiResponse(responseCode = "400", description = "Invalid product data")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
@@ -73,7 +72,6 @@ public class ProductController {
     @Operation(
             summary = "Get search suggestions",
             description = "Returns autocomplete/search suggestions based on partial query input",
-            tags = {"Product Management"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "Suggestions returned",
                             content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
@@ -93,7 +91,6 @@ public class ProductController {
     @Operation(
             summary = "Upload product image",
             description = "Uploads one or more images for a product listing",
-            tags = {"Product Management"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Image uploaded successfully",
@@ -101,7 +98,7 @@ public class ProductController {
                     @ApiResponse(responseCode = "400", description = "Invalid file or format")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @PreAuthorize("hasAuthority('VENDOR')")
     @PostMapping("/{id}/upload-image")
     public ResponseEntity<?> uploadImage(@PathVariable Long id, @RequestParam("image") MultipartFile file) {
@@ -144,7 +141,6 @@ public class ProductController {
     @Operation(
             summary = "Get all products",
             description = "Returns a paginated list of all available products",
-            tags = {"Product Management"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "Products retrieved successfully",
                             content = @Content(schema = @Schema(implementation = ProductDTO.class)))
@@ -186,7 +182,6 @@ public class ProductController {
     @Operation(
             summary = "Search products",
             description = "Search for products using a keyword query with pagination support",
-            tags = {"Product Management"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "Search results returned",
                             content = @Content(schema = @Schema(implementation = ProductDTO.class)))
@@ -204,7 +199,6 @@ public class ProductController {
     @Operation(
             summary = "Get product by ID",
             description = "Fetches the full details of a single product by its ID",
-            tags = {"Product Management"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "Product found",
                             content = @Content(schema = @Schema(implementation = ProductDTO.class))),
@@ -224,7 +218,6 @@ public class ProductController {
     @Operation(
             summary = "Update product",
             description = "Updates an existing product's information. Vendor/Admin only.",
-            tags = {"Product Management"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Product updated successfully",
@@ -232,7 +225,7 @@ public class ProductController {
                     @ApiResponse(responseCode = "404", description = "Product not found")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @PreAuthorize("hasAuthority('VENDOR')")
     @PatchMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
@@ -268,7 +261,6 @@ public class ProductController {
     @Operation(
             summary = "Delete product",
             description = "Permanently removes a product from the system. Vendor/Admin only.",
-            tags = {"Product Management"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Product deleted successfully",
@@ -276,7 +268,7 @@ public class ProductController {
                     @ApiResponse(responseCode = "404", description = "Product not found")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @PreAuthorize("hasAuthority('VENDOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable(value = "id") Long productId) {

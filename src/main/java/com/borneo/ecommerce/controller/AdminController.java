@@ -33,7 +33,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Tag(name = "10. Admin", description = "Administrative management and system control APIs")
-@SecurityRequirement(name = "bearerAuth")
+
 @PreAuthorize("hasAuthority('ADMIN')")
 @RestController
 @RequestMapping("/api/admin")
@@ -58,7 +58,6 @@ public class AdminController {
     @Operation(
             summary = "Get all users",
             description = "Returns a paginated list of all registered users. Admin only.",
-            tags = {"User Management"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Users retrieved successfully",
@@ -69,7 +68,7 @@ public class AdminController {
                             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @GetMapping("/users")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         List<User> users = userService.findAll();
@@ -80,7 +79,6 @@ public class AdminController {
     @Operation(
             summary = "Get user by ID",
             description = "Fetches a single user's details by their unique ID",
-            tags = {"User Management"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "User found",
@@ -89,7 +87,7 @@ public class AdminController {
                             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @GetMapping("/users/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
         User user = userRepository.findById(id)
@@ -101,7 +99,6 @@ public class AdminController {
     @Operation(
             summary = "Get users by role",
             description = "Returns all users that match the specified role (ADMIN, USER, VENDOR)",
-            tags = {"User Management"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Users retrieved successfully",
@@ -109,7 +106,7 @@ public class AdminController {
                     @ApiResponse(responseCode = "400", description = "Invalid role provided")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @GetMapping("/users/role/{roleName}")
     public ResponseEntity<List<UserResponseDTO>> getUsersByRole(@PathVariable String roleName) {
         List<User> users = userService.findByRoleName(roleName);
@@ -120,7 +117,6 @@ public class AdminController {
     @Operation(
             summary = "Update user by ID",
             description = "Updates the details of an existing user",
-            tags = {"User Management"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "User updated successfully",
@@ -129,7 +125,7 @@ public class AdminController {
                     @ApiResponse(responseCode = "404", description = "User not found")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @PatchMapping("/update/{id}")
     public ResponseEntity<?> userUpdate(
             @PathVariable Long id,  //   Extract id from URL path
@@ -180,7 +176,6 @@ public class AdminController {
     @Operation(
             summary = "Delete user by ID",
             description = "Permanently deletes a user from the system. Admin only.",
-            tags = {"User Management"},
             security = @SecurityRequirement(name = "BearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "User deleted successfully",
@@ -188,7 +183,7 @@ public class AdminController {
                     @ApiResponse(responseCode = "404", description = "User not found")
             }
     )
-    @SecurityRequirement(name = "bearerAuth")
+
     @DeleteMapping("/users/{id}")
     public ResponseEntity<?> deleteUserById(@PathVariable Long id) {
         User user = userRepository.findById(id)
