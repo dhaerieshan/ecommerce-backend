@@ -7,6 +7,8 @@ import com.borneo.ecommerce.model.User;
 import com.borneo.ecommerce.repository.RoleRepository;
 import com.borneo.ecommerce.repository.UserRepository;
 import com.borneo.ecommerce.security.JwtUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -21,12 +23,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+@Tag(name = "01. Authentication", description = "User login, registration, and JWT authentication APIs")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -52,7 +54,10 @@ public class AuthController {
     @Value("${vendor.secret.code:defaultVendorCode}")
     private String vendorSecretCode;
 
-
+    @Operation(
+            summary = "Register a new user",
+            description = "Creates a new USER or VENDOR account. Password is encrypted before storing."
+    )
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@RequestBody SignupRequest signupRequest) {
         if (userRepository.existsByUsername(signupRequest.getUsername())){
@@ -68,13 +73,10 @@ public class AuthController {
         user.setEmail(signupRequest.getEmail());
         user.setFirstName(signupRequest.getFirstName());
         user.setLastName(signupRequest.getLastName());
-        user.setDOB(signupRequest.getDOB());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
 
 
-        if (user.getDOB() == null) {
-            user.setDOB(LocalDate.of(2003, 3, 5));
-        }
+
 
 
         if (user.getLastName() == null || user.getLastName().isEmpty()) {
@@ -125,6 +127,10 @@ public class AuthController {
         return ResponseEntity.ok("User registered successfully");
     }
 
+    @Operation(
+            summary = "Login user",
+            description = "Authenticates user credentials and returns a JWT token for accessing secured APIs."
+    )
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest){
         Authentication authentication = authenticationManager.authenticate(

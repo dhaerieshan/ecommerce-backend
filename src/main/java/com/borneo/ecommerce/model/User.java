@@ -3,7 +3,6 @@ package com.borneo.ecommerce.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,8 +36,6 @@ public class User {
     @Column(nullable = false) // Added field
     private String address;
 
-    @Column(nullable = false)
-    private LocalDate DOB;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

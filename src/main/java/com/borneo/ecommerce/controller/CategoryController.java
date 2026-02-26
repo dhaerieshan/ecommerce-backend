@@ -1,12 +1,21 @@
 package com.borneo.ecommerce.controller;
 
 import com.borneo.ecommerce.dto.CategoryDTO;
+import com.borneo.ecommerce.dto.MessageResponse;
 import com.borneo.ecommerce.exception.ResourceNotFoundException;
+import com.borneo.ecommerce.model.Category;
 import com.borneo.ecommerce.service.CategoryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +27,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
+@Tag(name = "05. Categories", description = "Product category and subcategory management APIs")
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
@@ -35,36 +45,38 @@ public class CategoryController {
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Create a new category",
+            description = "Creates a new product category. Admin/Vendor only.",
+            tags = {"Category Management"},
+            security = @SecurityRequirement(name = "BearerAuth"),
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Category created successfully",
+                            content = @Content(schema = @Schema(implementation = Category.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid input data")
+            }
+    )
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyAuthority('ADMIN','VENDOR')")
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
         CategoryDTO createdCategory = categoryService.createCategory(categoryDTO);
         return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long id, @RequestBody CategoryDTO categoryDTO) {
-        CategoryDTO updatedCategory = categoryService.updateCategory(id, categoryDTO);
-        return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
-        categoryService.deleteCategory(id);
-        return new ResponseEntity<>("Category deleted successfully.", HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
-        CategoryDTO categoryDTO = categoryService.getCategoryById(id);
-        return new ResponseEntity<>(categoryDTO, HttpStatus.OK);
-    }
-
-    @GetMapping("/child/{id}")
-    public ResponseEntity<List<CategoryDTO>> getSubCategoryById(@PathVariable Long id) {
-        List<CategoryDTO> subCategories = categoryService.getSubcategories(id);
-        return new ResponseEntity<>(subCategories, HttpStatus.OK);
-    }
-
+    @Operation(
+            summary = "Upload category image",
+            description = "Uploads and assigns an image to the specified category",
+            tags = {"Category Management"},
+            security = @SecurityRequirement(name = "BearerAuth"),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Image uploaded successfully",
+                            content = @Content(schema = @Schema(implementation = CategoryDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid file format")
+            }
+    )
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyAuthority('ADMIN','VENDOR')")
     @PostMapping("/{id}/upload-image")
     public ResponseEntity<?> uploadImage(@PathVariable Long id, @RequestParam("image") MultipartFile file) {
         try {
@@ -99,6 +111,19 @@ public class CategoryController {
         }
     }
 
+    @Operation(
+            summary = "Upload category page banner",
+            description = "Uploads and assigns a banner image to the category's page",
+            tags = {"Category Management"},
+            security = @SecurityRequirement(name = "BearerAuth"),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Banner uploaded successfully",
+                            content = @Content(schema = @Schema(implementation = CategoryDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid file format")
+            }
+    )
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyAuthority('ADMIN','VENDOR')")
     @PostMapping("/{id}/upload-banner")
     public ResponseEntity<?> uploadBanner(@PathVariable Long id, @RequestParam("banner") MultipartFile file) {
         try {
@@ -131,6 +156,77 @@ public class CategoryController {
             String errorMessage = "Could not upload the image: " + e.getMessage();
             return ResponseEntity.status(500).body(errorMessage);
         }
+    }
+
+    @Operation(
+            summary = "Get category by ID",
+            description = "Fetches a single category and its subcategories by ID",
+            tags = {"Category Management"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Category found",
+                            content = @Content(schema = @Schema(implementation = CategoryDTO.class))),
+                    @ApiResponse(responseCode = "404", description = "Category not found")
+            }
+    )
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
+        CategoryDTO categoryDTO = categoryService.getCategoryById(id);
+        return new ResponseEntity<>(categoryDTO, HttpStatus.OK);
+    }
+
+
+    @Operation(
+            summary = "Get subcategory by ID",
+            description = "Fetches a specific subcategory within a parent category",
+            tags = {"Category Management"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Subcategory found",
+                            content = @Content(schema = @Schema(implementation = Category.class))),
+                    @ApiResponse(responseCode = "404", description = "Subcategory not found")
+            }
+    )
+    @GetMapping("/child/{id}")
+    public ResponseEntity<List<CategoryDTO>> getSubCategoryById(@PathVariable Long id) {
+        List<CategoryDTO> subCategories = categoryService.getSubcategories(id);
+        return new ResponseEntity<>(subCategories, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Update category",
+            description = "Updates an existing category's name, description, or other details",
+            tags = {"Category Management"},
+            security = @SecurityRequirement(name = "BearerAuth"),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Category updated successfully",
+                            content = @Content(schema = @Schema(implementation = Category.class))),
+                    @ApiResponse(responseCode = "404", description = "Category not found")
+            }
+    )
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyAuthority('ADMIN','VENDOR')")
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long id, @RequestBody CategoryDTO categoryDTO) {
+        CategoryDTO updatedCategory = categoryService.updateCategory(id, categoryDTO);
+        return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Delete category",
+            description = "Permanently deletes a category and its associated subcategories. Admin only.",
+            tags = {"Category Management"},
+            security = @SecurityRequirement(name = "BearerAuth"),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Category deleted successfully",
+                            content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "Category not found")
+            }
+    )
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyAuthority('ADMIN','VENDOR')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
+        categoryService.deleteCategory(id);
+        return new ResponseEntity<>("Category deleted successfully.", HttpStatus.OK);
     }
 
 }

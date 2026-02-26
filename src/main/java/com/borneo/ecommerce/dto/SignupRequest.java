@@ -5,8 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-import java.time.LocalDate;
-
 @Data
 public class SignupRequest {
     @NotBlank
@@ -29,5 +27,4 @@ public class SignupRequest {
     private String lastName;
 
     private String address;
-    private LocalDate DOB;
 }

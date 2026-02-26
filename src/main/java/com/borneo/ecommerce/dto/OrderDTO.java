@@ -2,6 +2,7 @@ package com.borneo.ecommerce.dto;
 
 import com.borneo.ecommerce.model.Order;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class OrderDTO {
     private Long id;  // DB ID if you still want it
     private String displayOrderNumber; //   NEW
@@ -32,7 +34,4 @@ public class OrderDTO {
     }
 
 
-    //   No-argument constructor (needed for frameworks like Jackson)
-    public OrderDTO() {
-    }
 }

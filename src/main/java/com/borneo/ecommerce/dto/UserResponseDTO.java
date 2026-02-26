@@ -3,7 +3,6 @@ package com.borneo.ecommerce.dto;
 
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -16,6 +15,5 @@ public class UserResponseDTO {
     private String firstName;
     private String lastName;
     private String address;
-    private LocalDate DOB;
 
 }
