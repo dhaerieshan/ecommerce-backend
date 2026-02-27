@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -48,15 +49,13 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Value("${app.upload.dir}")
     private String UPLOAD_DIR;
-
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private CategoryRepository categoryRepository;
 
     @Operation(
             summary = "Create a new product",
@@ -70,7 +69,26 @@ public class ProductController {
                     @ApiResponse(
                             responseCode = "400",
                             description = "Invalid product data",
-                            content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Invalid product data\"}"))),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Unauthorized\"}"))),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden - Admin access required",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(
+                                            value = "{\"message\": \"Access denied: insufficient permissions\"}")))
             })
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
@@ -105,6 +123,7 @@ public class ProductController {
             @Parameter(description = "Sort direction: asc or desc", example = "asc")
             @RequestParam(defaultValue = "asc")
             String sortDir) {
+
         Sort sort =
                 sortDir.equalsIgnoreCase("desc")
                         ? Sort.by(sortBy).descending()
@@ -143,11 +162,8 @@ public class ProductController {
 
         List<ProductDTO> featuredProducts = new ArrayList<>();
         Random random = new Random();
-
         for (List<ProductDTO> products : categoryMap.values()) {
-            if (!products.isEmpty()) {
-                featuredProducts.add(products.get(random.nextInt(products.size())));
-            }
+            if (!products.isEmpty()) featuredProducts.add(products.get(random.nextInt(products.size())));
             if (featuredProducts.size() >= 4) break;
         }
         return featuredProducts;
@@ -161,7 +177,16 @@ public class ProductController {
                             responseCode = "200",
                             description = "Search results returned",
                             content =
-                            @Content(array = @ArraySchema(schema = @Schema(implementation = ProductDTO.class))))
+                            @Content(
+                                    array = @ArraySchema(schema = @Schema(implementation = ProductDTO.class)))),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Missing search query",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(value = "{\"message\": \"Search query is required\"}")))
             })
     @GetMapping("/search")
     public ResponseEntity<List<ProductDTO>> searchProducts(
@@ -182,14 +207,18 @@ public class ProductController {
                             content =
                             @Content(
                                     array = @ArraySchema(schema = @Schema(implementation = ProductDTO.class)))),
-                    @ApiResponse(responseCode = "400", description = "Invalid request")
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Missing or invalid productId",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"productId is required\"}")))
             })
     @PostMapping("/suggestions")
     public ResponseEntity<List<ProductDTO>> getSuggestions(@RequestBody Map<String, Long> payload) {
         Long productId = payload.get("productId");
-        if (productId == null) {
-            return ResponseEntity.badRequest().body(null);
-        }
+        if (productId == null) return ResponseEntity.badRequest().body(null);
         List<ProductDTO> suggestions = productService.getSuggestedProducts(productId);
         return ResponseEntity.ok(suggestions);
     }
@@ -205,7 +234,10 @@ public class ProductController {
                     @ApiResponse(
                             responseCode = "404",
                             description = "Product not found",
-                            content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Product not found\"}")))
             })
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProductById(
@@ -228,9 +260,28 @@ public class ProductController {
                             description = "Product updated successfully",
                             content = @Content(schema = @Schema(implementation = ProductDTO.class))),
                     @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Unauthorized\"}"))),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden - Vendor access required",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(
+                                            value = "{\"message\": \"Access denied: insufficient permissions\"}"))),
+                    @ApiResponse(
                             responseCode = "404",
                             description = "Product not found",
-                            content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Product not found\"}")))
             })
     @PreAuthorize("hasAuthority('VENDOR')")
     @PatchMapping("/{id}")
@@ -238,9 +289,7 @@ public class ProductController {
             @Parameter(description = "Product ID", example = "1") @PathVariable Long id,
             @RequestBody Map<String, Object> updates) {
         Optional<Product> optionalProduct = productRepository.findById(id);
-        if (optionalProduct.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        if (optionalProduct.isEmpty()) return ResponseEntity.notFound().build();
 
         Product product = optionalProduct.get();
         updates.forEach(
@@ -263,7 +312,6 @@ public class ProductController {
                         }
                     }
         });
-
         productRepository.save(product);
         return ResponseEntity.ok(product);
     }
@@ -276,9 +324,44 @@ public class ProductController {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Image uploaded successfully",
-                            content = @Content(schema = @Schema(implementation = MessageResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Product not found"),
-                    @ApiResponse(responseCode = "400", description = "Invalid file or format")
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(value = "{\"message\": \"Image uploaded successfully\"}"))),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Unauthorized\"}"))),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden - Vendor access required",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(
+                                            value = "{\"message\": \"Access denied: insufficient permissions\"}"))),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Product not found",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Product not found\"}"))),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Image upload failed",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(
+                                            value =
+                                                    "{\"message\": \"Something went wrong. Please try again later.\"}")))
             })
     @PreAuthorize("hasAuthority('VENDOR')")
     @PostMapping("/{id}/upload-image")
@@ -287,22 +370,16 @@ public class ProductController {
             @RequestParam("image") MultipartFile file) {
         try {
             ProductDTO productDTO = productService.getProductById(id);
-            if (productDTO == null) {
-                throw new ResourceNotFoundException("Product not found");
-            }
+            if (productDTO == null) throw new ResourceNotFoundException("Product not found");
 
             String filename = UUID.randomUUID() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
             Path uploadPath = Paths.get(UPLOAD_DIR);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-
-            Path filePath = uploadPath.resolve(filename);
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
+            Files.copy(
+                    file.getInputStream(), uploadPath.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
 
             productDTO.setImagePath("/images/" + filename);
             productService.updateProduct(id, productDTO);
-
             return ResponseEntity.ok(new MessageResponse("Image uploaded successfully"));
 
         } catch (ResourceNotFoundException ex) {
@@ -322,15 +399,41 @@ public class ProductController {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Product deleted successfully",
-                            content = @Content(schema = @Schema(implementation = MessageResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Product not found")
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(value = "{\"message\": \"Product deleted successfully\"}"))),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Unauthorized\"}"))),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden - Vendor access required",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(
+                                            value = "{\"message\": \"Access denied: insufficient permissions\"}"))),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Product not found",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Product not found\"}")))
             })
     @PreAuthorize("hasAuthority('VENDOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(
-            @Parameter(description = "Product ID", example = "1") @PathVariable Long productId) {
+            @Parameter(description = "Product ID", example = "1") @PathVariable Long id) {
         try {
-            productService.deleteProduct(productId);
+            productService.deleteProduct(id);
             return ResponseEntity.ok(new MessageResponse("Product deleted successfully"));
         } catch (ResourceNotFoundException ex) {
             return ResponseEntity.status(404).body(new MessageResponse("Product not found"));

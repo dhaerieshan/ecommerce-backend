@@ -10,6 +10,7 @@ import com.borneo.ecommerce.repository.UserRepository;
 import com.borneo.ecommerce.security.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -69,23 +70,40 @@ public class AuthController {
                   @ApiResponse(
                           responseCode = "200",
                           description = "User registered successfully",
-                          content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+                          content =
+                          @Content(
+                                  schema = @Schema(implementation = MessageResponse.class),
+                                  examples =
+                                  @ExampleObject(value = "{\"message\": \"User registered successfully\"}"))),
                   @ApiResponse(
                           responseCode = "400",
                           description = "Username or email already in use",
-                          content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+                          content =
+                          @Content(
+                                  schema = @Schema(implementation = MessageResponse.class),
+                                  examples =
+                                  @ExampleObject(
+                                          value = "{\"message\": \"Error: Username is already in use\"}"))),
                   @ApiResponse(
                           responseCode = "403",
                           description = "Invalid secret code for ADMIN/VENDOR signup",
-                          content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+                          content =
+                          @Content(
+                                  schema = @Schema(implementation = MessageResponse.class),
+                                  examples =
+                                  @ExampleObject(
+                                          value =
+                                                  "{\"message\": \"Error: Invalid secret code for admin account creation.\"}")))
           })
   @PostMapping("/signup")
-  public ResponseEntity<String> registerUser(
+  public ResponseEntity<MessageResponse> registerUser(
           @org.springframework.web.bind.annotation.RequestBody SignupRequest signupRequest) {
     if (userRepository.existsByUsername(signupRequest.getUsername()))
-      return ResponseEntity.badRequest().body("Error: Username is already in use");
+      return ResponseEntity.badRequest()
+              .body(new MessageResponse("Error: Username is already in use"));
     if (userRepository.existsByEmail(signupRequest.getEmail()))
-      return ResponseEntity.badRequest().body("Error: Email is already in use");
+      return ResponseEntity.badRequest()
+              .body(new MessageResponse("Error: Email is already in use"));
 
     User user = new User();
     user.setUsername(signupRequest.getUsername());
@@ -115,14 +133,14 @@ public class AuthController {
         if (signupRequest.getSecretCode() == null
                 || !signupRequest.getSecretCode().equals(adminSecretCode))
           return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                  .body("Error: Invalid secret code for admin account creation.");
+                  .body(new MessageResponse("Error: Invalid secret code for admin account creation."));
         roles.add(roleRepository.findByName("ADMIN"));
         break;
       case "VENDOR":
         if (signupRequest.getSecretCode() == null
                 || !signupRequest.getSecretCode().equals(vendorSecretCode))
           return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                  .body("Error: Invalid secret code for vendor account creation.");
+                  .body(new MessageResponse("Error: Invalid secret code for vendor account creation."));
         roles.add(roleRepository.findByName("VENDOR"));
         break;
       default:
@@ -132,7 +150,7 @@ public class AuthController {
 
     user.setRoles(roles);
     userRepository.save(user);
-    return ResponseEntity.ok("User registered successfully");
+    return ResponseEntity.ok(new MessageResponse("User registered successfully"));
   }
 
   @Operation(
@@ -156,7 +174,11 @@ public class AuthController {
                   @ApiResponse(
                           responseCode = "401",
                           description = "Invalid username or password",
-                          content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+                          content =
+                          @Content(
+                                  schema = @Schema(implementation = MessageResponse.class),
+                                  examples =
+                                  @ExampleObject(value = "{\"message\": \"Invalid username or password\"}")))
           })
   @PostMapping("/signin")
   public ResponseEntity<?> authenticateUser(

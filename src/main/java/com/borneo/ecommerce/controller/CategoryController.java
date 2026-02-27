@@ -7,6 +7,7 @@ import com.borneo.ecommerce.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -57,7 +58,26 @@ public class CategoryController {
                     @ApiResponse(
                             responseCode = "400",
                             description = "Invalid input data",
-                            content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Invalid input data\"}"))),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Unauthorized\"}"))),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden - Admin or Vendor access required",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(
+                                            value = "{\"message\": \"Access denied: insufficient permissions\"}")))
             })
     @PreAuthorize("hasAnyAuthority('ADMIN','VENDOR')")
     @PostMapping
@@ -84,6 +104,7 @@ public class CategoryController {
             @Parameter(description = "Number of items per page", example = "5")
             @RequestParam(defaultValue = "5")
             int size) {
+
         List<CategoryDTO> allCategories = categoryService.getAllCategories();
         PageRequest pageable = PageRequest.of(page, size, Sort.by("id").ascending());
 
@@ -107,7 +128,10 @@ public class CategoryController {
                     @ApiResponse(
                             responseCode = "404",
                             description = "Category not found",
-                            content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Category not found\"}")))
             })
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> getCategoryById(
@@ -124,7 +148,13 @@ public class CategoryController {
                             responseCode = "200",
                             description = "Subcategories found",
                             content = @Content(schema = @Schema(implementation = CategoryDTO.class))),
-                    @ApiResponse(responseCode = "404", description = "Category not found")
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Category not found",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Category not found\"}")))
             })
     @GetMapping("/child/{id}")
     public ResponseEntity<List<CategoryDTO>> getSubCategoryById(
@@ -142,7 +172,29 @@ public class CategoryController {
                             responseCode = "200",
                             description = "Category updated successfully",
                             content = @Content(schema = @Schema(implementation = CategoryDTO.class))),
-                    @ApiResponse(responseCode = "404", description = "Category not found")
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Unauthorized\"}"))),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden - Admin or Vendor access required",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(
+                                            value = "{\"message\": \"Access denied: insufficient permissions\"}"))),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Category not found",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Category not found\"}")))
             })
     @PreAuthorize("hasAnyAuthority('ADMIN','VENDOR')")
     @PutMapping("/{id}")
@@ -161,9 +213,44 @@ public class CategoryController {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Image uploaded successfully",
-                            content = @Content(schema = @Schema(implementation = MessageResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Category not found"),
-                    @ApiResponse(responseCode = "400", description = "Invalid file format")
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(value = "{\"message\": \"Image uploaded successfully\"}"))),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Unauthorized\"}"))),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden - Admin or Vendor access required",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(
+                                            value = "{\"message\": \"Access denied: insufficient permissions\"}"))),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Category not found",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Category not found\"}"))),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Image upload failed",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(
+                                            value =
+                                                    "{\"message\": \"Something went wrong. Please try again later.\"}")))
             })
     @PreAuthorize("hasAnyAuthority('ADMIN','VENDOR')")
     @PostMapping("/{id}/upload-image")
@@ -177,12 +264,11 @@ public class CategoryController {
             String filename = UUID.randomUUID() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
             Path uploadPath = Paths.get(UPLOAD_DIR);
             if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
-
             Files.copy(
                     file.getInputStream(), uploadPath.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
+
             categoryDTO.setImagePath("/images/" + filename);
             categoryService.updateCategory(id, categoryDTO);
-
             return ResponseEntity.ok(new MessageResponse("Image uploaded successfully"));
 
         } catch (ResourceNotFoundException ex) {
@@ -202,9 +288,44 @@ public class CategoryController {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Banner uploaded successfully",
-                            content = @Content(schema = @Schema(implementation = MessageResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Category not found"),
-                    @ApiResponse(responseCode = "400", description = "Invalid file format")
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(value = "{\"message\": \"Banner uploaded successfully\"}"))),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Unauthorized\"}"))),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden - Admin or Vendor access required",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(
+                                            value = "{\"message\": \"Access denied: insufficient permissions\"}"))),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Category not found",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Category not found\"}"))),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Banner upload failed",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(
+                                            value =
+                                                    "{\"message\": \"Something went wrong. Please try again later.\"}")))
             })
     @PreAuthorize("hasAnyAuthority('ADMIN','VENDOR')")
     @PostMapping("/{id}/upload-banner")
@@ -218,12 +339,11 @@ public class CategoryController {
             String filename = UUID.randomUUID() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
             Path uploadPath = Paths.get(UPLOAD_DIR);
             if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
-
             Files.copy(
                     file.getInputStream(), uploadPath.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
+
             categoryDTO.setBannerPath("/images/" + filename);
             categoryService.updateCategory(id, categoryDTO);
-
             return ResponseEntity.ok(new MessageResponse("Banner uploaded successfully"));
 
         } catch (ResourceNotFoundException ex) {
@@ -243,8 +363,35 @@ public class CategoryController {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Category deleted successfully",
-                            content = @Content(schema = @Schema(implementation = MessageResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Category not found")
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(
+                                            value = "{\"message\": \"Category deleted successfully\"}"))),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Unauthorized\"}"))),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden - Admin or Vendor access required",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(
+                                            value = "{\"message\": \"Access denied: insufficient permissions\"}"))),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Category not found",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Category not found\"}")))
             })
     @PreAuthorize("hasAnyAuthority('ADMIN','VENDOR')")
     @DeleteMapping("/{id}")

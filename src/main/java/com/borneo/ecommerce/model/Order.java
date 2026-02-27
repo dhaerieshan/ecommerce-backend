@@ -14,9 +14,11 @@ public class Order {
 
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
   public List<OrderItem> orderItems;
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
   @Temporal(TemporalType.TIMESTAMP)
   private Date orderDate;
 

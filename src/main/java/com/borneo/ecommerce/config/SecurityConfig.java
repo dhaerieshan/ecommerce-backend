@@ -30,101 +30,101 @@ import java.util.Arrays;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
+  @Autowired
+  private CustomUserDetailsService userDetailsService;
 
-    @Autowired
-    private JwtAuthenticationEntryPoint unauthorizedHandler;
+  @Autowired
+  private JwtAuthenticationEntryPoint unauthorizedHandler;
 
-    @Autowired
-    private JwtRequestFilter jwtRequestFilter;
+  @Autowired
+  private JwtRequestFilter jwtRequestFilter;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
+  @Bean
+  public AuthenticationManager authenticationManager(
+          AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    return authenticationConfiguration.getAuthenticationManager();
+  }
 
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
+  @Bean
+  public AuthenticationProvider authenticationProvider() {
+    DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+    authProvider.setUserDetailsService(userDetailsService);
+    authProvider.setPasswordEncoder(passwordEncoder());
+    return authProvider;
+  }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(
-                        authorize ->
-                                authorize
-                                        .requestMatchers(HttpMethod.OPTIONS, "/**")
-                                        .permitAll()
-                                        .requestMatchers("/api/auth/**")
-                                        .permitAll()
-                                        .requestMatchers("/api/otp/**")
-                                        .permitAll()
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .authorizeHttpRequests(
+                    authorize ->
+                            authorize
+                                    .requestMatchers(HttpMethod.OPTIONS, "/**")
+                                    .permitAll()
+                                    .requestMatchers("/api/auth/**")
+                                    .permitAll()
+                                    .requestMatchers("/api/otp/**")
+                                    .permitAll()
 
-                                        // Public APIs
-                                        .requestMatchers(HttpMethod.GET, "/api/products/**")
-                                        .permitAll()
-                                        .requestMatchers(HttpMethod.GET, "/api/categories/**")
-                                        .permitAll()
-                                        .requestMatchers("/images/**")
-                                        .permitAll()
+                                    // Public APIs
+                                    .requestMatchers(HttpMethod.GET, "/api/products/**")
+                                    .permitAll()
+                                    .requestMatchers(HttpMethod.GET, "/api/categories/**")
+                                    .permitAll()
+                                    .requestMatchers("/images/**")
+                                    .permitAll()
 
-                                        // Product Restrictions
-                                        .requestMatchers(HttpMethod.POST, "/api/products/**")
-                                        .hasAnyAuthority("ADMIN", "VENDOR")
-                                        .requestMatchers(HttpMethod.PUT, "/api/products/**")
-                                        .hasAnyAuthority("ADMIN", "VENDOR")
-                                        .requestMatchers(HttpMethod.DELETE, "/api/products/**")
-                                        .hasAuthority("ADMIN")
+                                    // Product Restrictions
+                                    .requestMatchers(HttpMethod.POST, "/api/products/**")
+                                    .hasAnyAuthority("ADMIN", "VENDOR")
+                                    .requestMatchers(HttpMethod.PUT, "/api/products/**")
+                                    .hasAnyAuthority("ADMIN", "VENDOR")
+                                    .requestMatchers(HttpMethod.DELETE, "/api/products/**")
+                                    .hasAuthority("ADMIN")
 
-                                        // Role-based APIs
-                                        .requestMatchers("/api/admin/**")
-                                        .hasAuthority("ADMIN")
-                                        .requestMatchers("/api/vendor/**")
-                                        .hasAuthority("VENDOR")
+                                    // Role-based APIs
+                                    .requestMatchers("/api/admin/**")
+                                    .hasAuthority("ADMIN")
+                                    .requestMatchers("/api/vendor/**")
+                                    .hasAuthority("VENDOR")
 
-                                        // Swagger
-                                        .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**")
-                                        .permitAll()
-                                        .anyRequest()
-                                        .authenticated())
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
-                .sessionManagement(
-                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                                    // Swagger
+                                    .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**")
+                                    .permitAll()
+                                    .anyRequest()
+                                    .authenticated())
+            .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+            .sessionManagement(
+                    session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+    return http.build();
+  }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(
-                Arrays.asList(
-                        "http://localhost:3000", "http://192.168.0.3:3000"
-                        // Add your deployed frontend URL here when ready
-                ));
-        configuration.setAllowedMethods(
-                Arrays.asList("GET", "PATCH", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setExposedHeaders(Arrays.asList("Authorization"));
-        configuration.setAllowCredentials(true);
-        configuration.setMaxAge(3600L);
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(
+            Arrays.asList(
+                    "http://localhost:3000", "http://192.168.0.3:3000"
+                    // Add your deployed frontend URL here when ready
+            ));
+    configuration.setAllowedMethods(
+            Arrays.asList("GET", "PATCH", "POST", "PUT", "DELETE", "OPTIONS"));
+    configuration.setAllowedHeaders(Arrays.asList("*"));
+    configuration.setExposedHeaders(Arrays.asList("Authorization"));
+    configuration.setAllowCredentials(true);
+    configuration.setMaxAge(3600L);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
+  }
 }

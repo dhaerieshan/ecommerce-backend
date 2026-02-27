@@ -12,25 +12,25 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootApplication
 public class EcommerceApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(EcommerceApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(EcommerceApplication.class, args);
+  }
 
-    @Bean
-    public CommandLineRunner demoData(
-            UserRepository userRepository,
-            PasswordEncoder passwordEncoder,
-            RoleRepository roleRepository) {
-        return args -> {
-            String[] roleNames = {"USER", "ADMIN", "VENDOR"};
+  @Bean
+  public CommandLineRunner demoData(
+          UserRepository userRepository,
+          PasswordEncoder passwordEncoder,
+          RoleRepository roleRepository) {
+    return args -> {
+      String[] roleNames = {"USER", "ADMIN", "VENDOR"};
 
-            for (String roleName : roleNames) {
-                if (roleRepository.findByName(roleName) == null) {
-                    Role role = new Role();
-                    role.setName(roleName);
-                    roleRepository.save(role);
-                }
-            }
-        };
-    }
+      for (String roleName : roleNames) {
+        if (roleRepository.findByName(roleName) == null) {
+          Role role = new Role();
+          role.setName(roleName);
+          roleRepository.save(role);
+        }
+      }
+    };
+  }
 }

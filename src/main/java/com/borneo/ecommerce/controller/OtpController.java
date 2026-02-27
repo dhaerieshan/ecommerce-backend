@@ -4,6 +4,7 @@ import com.borneo.ecommerce.dto.MessageResponse;
 import com.borneo.ecommerce.service.EmailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -41,8 +42,29 @@ public class OtpController {
                     @ApiResponse(
                             responseCode = "200",
                             description = "OTP sent successfully to email",
-                            content = @Content(schema = @Schema(implementation = MessageResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid or missing email address")
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"OTP sent successfully\"}"))),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Invalid or missing email address",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(
+                                            value = "{\"message\": \"Invalid or missing email address\"}"))),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Failed to send email",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(
+                                            value =
+                                                    "{\"message\": \"Something went wrong. Please try again later.\"}")))
             })
     @PostMapping("/send")
     public String sendOtp(
@@ -69,8 +91,18 @@ public class OtpController {
                     @ApiResponse(
                             responseCode = "200",
                             description = "OTP verified successfully",
-                            content = @Content(schema = @Schema(implementation = MessageResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid or expired OTP")
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(value = "{\"message\": \"OTP verified successfully!\"}"))),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Invalid or expired OTP",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Invalid OTP\"}")))
             })
     @PostMapping("/verify")
     public String verifyOtp(

@@ -29,7 +29,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -68,14 +67,14 @@ public class AdminController {
                             description = "Unauthorized",
                             content =
                             @Content(
-                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    schema = @Schema(implementation = MessageResponse.class),
                                     examples = @ExampleObject(value = "{\"message\": \"Unauthorized\"}"))),
                     @ApiResponse(
                             responseCode = "403",
                             description = "Forbidden - Admin access required",
                             content =
                             @Content(
-                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    schema = @Schema(implementation = MessageResponse.class),
                                     examples =
                                     @ExampleObject(
                                             value = "{\"message\": \"Access denied: insufficient permissions\"}")))

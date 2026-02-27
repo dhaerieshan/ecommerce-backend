@@ -3,6 +3,7 @@ package com.borneo.ecommerce.controller;
 import com.borneo.ecommerce.dto.MessageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -24,13 +25,28 @@ public class VendorController {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Vendor dashboard data retrieved",
-                            content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(
+                                            value = "{\"message\": \"Welcome to the Vendor Dashboard!\"}"))),
                     @ApiResponse(
                             responseCode = "401",
-                            description = "Unauthorized - JWT token missing or invalid"),
+                            description = "Unauthorized - JWT token missing or invalid",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Unauthorized\"}"))),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Forbidden - Access restricted to VENDOR role only")
+                            description = "Forbidden - Access restricted to VENDOR role only",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(
+                                            value = "{\"message\": \"Access denied: insufficient permissions\"}")))
             })
     @GetMapping("/dashboard")
     public String vendorDashboard() {
