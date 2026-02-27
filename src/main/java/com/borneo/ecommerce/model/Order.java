@@ -12,24 +12,23 @@ import java.util.List;
 @Table(name = "Orders")
 public class Order {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+  public List<OrderItem> orderItems;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date orderDate;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<OrderItem> orderItems;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date orderDate;
-    private BigDecimal totalAmount;
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+  private BigDecimal totalAmount;
 
-    @Column(unique = true)
-    private String displayOrderNumber;
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 
-    @Column(name = "status")
-    private String status;  // e.g., "In progress", "CANCELLED"
+  @Column(unique = true)
+  private String displayOrderNumber;
 
-
+  @Column(name = "status")
+  private String status; // e.g., "In progress", "CANCELLED"
 }

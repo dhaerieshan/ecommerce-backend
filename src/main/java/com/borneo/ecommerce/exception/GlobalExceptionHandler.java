@@ -25,33 +25,28 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<MessageResponse> handleValidationErrors(
             MethodArgumentNotValidException ex) {
-        String errors = ex.getBindingResult().getFieldErrors()
-                .stream()
-                .map(FieldError::getDefaultMessage)
-                .collect(Collectors.joining(", "));
+        String errors =
+                ex.getBindingResult().getFieldErrors().stream()
+                        .map(FieldError::getDefaultMessage)
+                        .collect(Collectors.joining(", "));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new MessageResponse("Validation failed: " + errors));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<MessageResponse> handleIllegalArgument(
-            IllegalArgumentException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new MessageResponse(ex.getMessage()));
+    public ResponseEntity<MessageResponse> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<MessageResponse> handleIllegalState(
-            IllegalStateException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new MessageResponse(ex.getMessage()));
+    public ResponseEntity<MessageResponse> handleIllegalState(IllegalStateException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse(ex.getMessage()));
     }
 
     // ── 401 Unauthorized ───────────────────────────────────────
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<MessageResponse> handleBadCredentials(
-            BadCredentialsException ex) {
+    public ResponseEntity<MessageResponse> handleBadCredentials(BadCredentialsException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new MessageResponse("Invalid username or password"));
     }
@@ -59,8 +54,7 @@ public class GlobalExceptionHandler {
     // ── 403 Forbidden ──────────────────────────────────────────
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<MessageResponse> handleAccessDenied(
-            AccessDeniedException ex) {
+    public ResponseEntity<MessageResponse> handleAccessDenied(AccessDeniedException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(new MessageResponse("Access denied: insufficient permissions"));
     }
@@ -68,33 +62,26 @@ public class GlobalExceptionHandler {
     // ── 404 Not Found ──────────────────────────────────────────
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<MessageResponse> handleResourceNotFound(
-            ResourceNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new MessageResponse(ex.getMessage()));
+    public ResponseEntity<MessageResponse> handleResourceNotFound(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<MessageResponse> handleUsernameNotFound(
-            UsernameNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new MessageResponse(ex.getMessage()));
+    public ResponseEntity<MessageResponse> handleUsernameNotFound(UsernameNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse(ex.getMessage()));
     }
 
     // ── 409 Conflict ───────────────────────────────────────────
 
     @ExceptionHandler(DuplicateResourceException.class)
-    public ResponseEntity<MessageResponse> handleDuplicateResource(
-            DuplicateResourceException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(new MessageResponse(ex.getMessage()));
+    public ResponseEntity<MessageResponse> handleDuplicateResource(DuplicateResourceException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse(ex.getMessage()));
     }
 
     // ── 413 Payload Too Large ──────────────────────────────────
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public ResponseEntity<MessageResponse> handleMaxUploadSize(
-            MaxUploadSizeExceededException ex) {
+    public ResponseEntity<MessageResponse> handleMaxUploadSize(MaxUploadSizeExceededException ex) {
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
                 .body(new MessageResponse("File size exceeds the maximum allowed limit"));
     }

@@ -16,22 +16,34 @@ import java.math.BigDecimal;
 @Schema(description = "Individual order item")
 public class OrderItemDTO {
 
-    @Schema(description = "Order ID this item belongs to", example = "101", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(
+            description = "Order ID this item belongs to",
+            example = "101",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private Long orderId;
 
     @Schema(description = "Product ID", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long productId;
 
-    @Schema(description = "Product name", example = "Samsung Galaxy S26", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(
+            description = "Product name",
+            example = "Samsung Galaxy S26",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private String productName;
 
-    @Schema(description = "Product image path", example = "/images/samsung-s26.jpg", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(
+            description = "Product image path",
+            example = "/images/samsung-s26.jpg",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private String productImage;
 
     @Schema(description = "Quantity ordered", example = "1")
     private int quantity;
 
-    @Schema(description = "Price per unit at time of order", example = "999.00", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(
+            description = "Price per unit at time of order",
+            example = "999.00",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private BigDecimal price;
 
     public OrderItemDTO(OrderItem orderItem) {

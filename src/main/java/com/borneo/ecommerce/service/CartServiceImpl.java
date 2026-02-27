@@ -26,12 +26,15 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     public Cart getCartByUser(User user) {
-        return cartRepository.findByUser(user).orElseGet(() -> {
-            Cart newCart = new Cart();
-            newCart.setUser(user);
-            newCart.setItems(new ArrayList<>());   
-            return cartRepository.save(newCart);
-        });
+        return cartRepository
+                .findByUser(user)
+                .orElseGet(
+                        () -> {
+                            Cart newCart = new Cart();
+                            newCart.setUser(user);
+                            newCart.setItems(new ArrayList<>());
+                            return cartRepository.save(newCart);
+                        });
     }
 
     @Transactional
@@ -40,10 +43,9 @@ public class CartServiceImpl implements CartService {
         Cart cart = getCartByUser(user);
         if (cart != null) {
             cart.getItems().clear(); //   Just removes items
-            cartRepository.save(cart);   //   Cart remains in DB
+            cartRepository.save(cart); //   Cart remains in DB
         }
     }
-
 
     @Override
     @Transactional
@@ -53,16 +55,19 @@ public class CartServiceImpl implements CartService {
             cart.setItems(new ArrayList<>());
         }
 
-        Optional<CartItem> existingCartItem = cart.getItems().stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
-                .findFirst();
+        Optional<CartItem> existingCartItem =
+                cart.getItems().stream()
+                        .filter(item -> item.getProduct().getId().equals(productId))
+                        .findFirst();
 
         if (existingCartItem.isPresent()) {
             CartItem cartItem = existingCartItem.get();
             cartItem.setQuantity(cartItem.getQuantity() + quantity);
         } else {
-            Product product = productRepository.findById(productId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+            Product product =
+                    productRepository
+                            .findById(productId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
             CartItem cartItem = new CartItem();
             cartItem.setProduct(product);
             cartItem.setQuantity(quantity);
@@ -89,5 +94,4 @@ public class CartServiceImpl implements CartService {
         Cart cart = getCartByUser(user);
         cartRepository.delete(cart);
     }
-
 }

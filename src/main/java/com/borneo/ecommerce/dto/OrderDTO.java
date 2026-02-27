@@ -17,22 +17,40 @@ import java.util.stream.Collectors;
 @Schema(description = "Order details")
 public class OrderDTO {
 
-    @Schema(description = "Order database ID", example = "101", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(
+            description = "Order database ID",
+            example = "101",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
-    @Schema(description = "Human readable order number", example = "ORD-2026-00101", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(
+            description = "Human readable order number",
+            example = "ORD-2026-00101",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private String displayOrderNumber;
 
-    @Schema(description = "Date the order was placed", example = "2026-02-27", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(
+            description = "Date the order was placed",
+            example = "2026-02-27",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private Date orderDate;
 
-    @Schema(description = "ID of the user who placed the order", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(
+            description = "ID of the user who placed the order",
+            example = "1",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private Long userId;
 
-    @Schema(description = "Total order amount", example = "1999.00", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(
+            description = "Total order amount",
+            example = "1999.00",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private BigDecimal totalAmount;
 
-    @Schema(description = "Current order status", example = "PENDING", allowableValues = {"PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"})
+    @Schema(
+            description = "Current order status",
+            example = "PENDING",
+            allowableValues = {"PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"})
     private String status;
 
     @Schema(description = "List of items in this order")

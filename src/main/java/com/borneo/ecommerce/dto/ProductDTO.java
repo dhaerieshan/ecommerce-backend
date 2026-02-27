@@ -18,7 +18,9 @@ public class ProductDTO {
     @Schema(description = "Name of the product", example = "Samsung Galaxy S26")
     private String name;
 
-    @Schema(description = "Product description", example = "Latest Samsung flagship smartphone with AI features")
+    @Schema(
+            description = "Product description",
+            example = "Latest Samsung flagship smartphone with AI features")
     private String description;
 
     @NotNull(message = "Price is required")
@@ -30,7 +32,10 @@ public class ProductDTO {
     @Schema(description = "Available stock quantity", example = "50")
     private Integer stock;
 
-    @Schema(description = "Image file path", example = "/images/samsung-s26.jpg", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(
+            description = "Image file path",
+            example = "/images/samsung-s26.jpg",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private String imagePath;
 
     @NotNull(message = "Category is required")

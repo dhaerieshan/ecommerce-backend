@@ -13,6 +13,4 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     Optional<Cart> findByUser(User user);
 
     boolean existsByUser(User user);
-
-
 }

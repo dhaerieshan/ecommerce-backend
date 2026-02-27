@@ -38,13 +38,20 @@ public class WishlistController {
             description = "Returns all products saved in the authenticated user's wishlist.",
             security = @SecurityRequirement(name = "bearerAuth"),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Wishlist retrieved successfully",
-                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = WishlistDTO.class)))),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized",
-                            content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Wishlist retrieved successfully",
+                            content =
+                            @Content(
+                                    array = @ArraySchema(schema = @Schema(implementation = WishlistDTO.class)))),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
                                     examples = @ExampleObject(value = "{\"message\": \"Unauthorized\"}")))
-            }
-    )
+            })
     @GetMapping
     public ResponseEntity<Set<WishlistDTO>> getWishlist(Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
@@ -56,23 +63,37 @@ public class WishlistController {
             description = "Saves a product to the authenticated user's wishlist by product ID.",
             security = @SecurityRequirement(name = "bearerAuth"),
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Product added to wishlist",
-                            content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                                    examples = @ExampleObject(value = "{\"message\": \"Product added to wishlist\"}"))),
-                    @ApiResponse(responseCode = "400", description = "Product already in wishlist",
-                            content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                                    examples = @ExampleObject(value = "{\"message\": \"Product is already in wishlist\"}"))),
-                    @ApiResponse(responseCode = "404", description = "Product not found",
-                            content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Product added to wishlist",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(value = "{\"message\": \"Product added to wishlist\"}"))),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Product already in wishlist",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(
+                                            value = "{\"message\": \"Product is already in wishlist\"}"))),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Product not found",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
                                     examples = @ExampleObject(value = "{\"message\": \"Product not found\"}")))
-            }
-    )
+            })
     @PostMapping("/{productId}")
     public ResponseEntity<MessageResponse> addToWishlist(
             @Parameter(description = "ID of the product to add", example = "1", required = true)
-            @PathVariable Long productId,
-            Authentication authentication
-    ) {
+            @PathVariable
+            Long productId,
+            Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
         boolean added = wishlistService.addToWishlist(user, productId);
         if (added) {
@@ -87,20 +108,30 @@ public class WishlistController {
             description = "Removes a specific product from the authenticated user's wishlist.",
             security = @SecurityRequirement(name = "bearerAuth"),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Product removed from wishlist",
-                            content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                                    examples = @ExampleObject(value = "{\"message\": \"Product removed from wishlist\"}"))),
-                    @ApiResponse(responseCode = "404", description = "Product not found in wishlist",
-                            content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                                    examples = @ExampleObject(value = "{\"message\": \"Product not found in wishlist\"}")))
-            }
-    )
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Product removed from wishlist",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(
+                                            value = "{\"message\": \"Product removed from wishlist\"}"))),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Product not found in wishlist",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples =
+                                    @ExampleObject(value = "{\"message\": \"Product not found in wishlist\"}")))
+            })
     @DeleteMapping("/{productId}")
     public ResponseEntity<MessageResponse> removeFromWishlist(
             @Parameter(description = "ID of the product to remove", example = "1", required = true)
-            @PathVariable Long productId,
-            Authentication authentication
-    ) {
+            @PathVariable
+            Long productId,
+            Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
         boolean removed = wishlistService.removeFromWishlist(user, productId);
         if (removed) {

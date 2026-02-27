@@ -21,10 +21,16 @@ public class CategoryDTO {
     @Schema(description = "Category name", example = "Electronics")
     private String name;
 
-    @Schema(description = "Category image path", example = "/images/electronics.jpg", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(
+            description = "Category image path",
+            example = "/images/electronics.jpg",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private String imagePath;
 
-    @Schema(description = "Category banner image path", example = "/images/electronics-banner.jpg", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(
+            description = "Category banner image path",
+            example = "/images/electronics-banner.jpg",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private String bannerPath;
 
     @Schema(description = "Parent category ID (null if root category)", example = "null")
@@ -39,8 +45,11 @@ public class CategoryDTO {
         this.imagePath = category.getImagePath();
         this.bannerPath = category.getBannerPath();
         this.parentId = category.getParent() != null ? category.getParent().getId() : null;
-        this.children = category.getSubcategories() != null
-                ? category.getSubcategories().stream().map(CategoryDTO::new).collect(Collectors.toList())
-                : null;
+        this.children =
+                category.getSubcategories() != null
+                        ? category.getSubcategories().stream()
+                        .map(CategoryDTO::new)
+                        .collect(Collectors.toList())
+                        : null;
     }
 }

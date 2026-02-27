@@ -6,16 +6,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface CartService {
 
-    Cart getCartByUser(User user);
+  Cart getCartByUser(User user);
 
-    @Transactional
-    void clearCart(User user);
+  @Transactional
+  void clearCart(User user);
 
-    void addProductToCart(User user, Long productId, int quantity);
+  void addProductToCart(User user, Long productId, int quantity);
 
-    void removeProductFromCart(User user, Long productId);
+  void removeProductFromCart(User user, Long productId);
 
-    void deleteByUser(User user);
-
-
+  void deleteByUser(User user);
 }

@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService{
+public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
@@ -27,15 +27,12 @@ public class CustomUserDetailsService implements UserDetailsService{
             throw new UsernameNotFoundException("User Not found with Username:" + username);
         }
         return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                mapRolesToAuthorities(user.getRoles())
-        );
+                user.getUsername(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
     }
-    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Set<Role> roles){
+
+    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Set<Role> roles) {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
-        }
     }
-
+}

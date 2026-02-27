@@ -25,16 +25,14 @@ public class Product {
     private int price;
     private int stock;
 
-
     private String imagePath;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")   
+    @JoinColumn(name = "category_id")
     @JsonBackReference
     private Category category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("product")   
+    @JsonIgnoreProperties("product")
     private Set<Wishlist> wishlists = new HashSet<>();
 }

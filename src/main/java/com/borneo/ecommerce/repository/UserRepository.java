@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long>{
+public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);
@@ -24,5 +24,4 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
     @Query("SELECT u FROM User u JOIN u.roles r WHERE UPPER(r.name) = UPPER(:roleName)")
     List<User> findByRoleName(String roleName);
-
 }

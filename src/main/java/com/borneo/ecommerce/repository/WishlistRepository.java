@@ -1,5 +1,3 @@
-
-
 package com.borneo.ecommerce.repository;
 
 import com.borneo.ecommerce.model.User;

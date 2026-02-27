@@ -24,54 +24,48 @@ public class WishlistService {
     @Autowired
     private ProductRepository productRepository;
 
-
     public boolean addToWishlist(User user, Long productId) {
 
         Product product = productRepository.findById(productId).orElse(null);
         if (product == null) {
-            return false;  
+            return false;
         }
-
 
         boolean exists = wishlistRepository.existsByUserAndProductId(user, productId);
         if (exists) {
-            return false;  
+            return false;
         }
 
-
-        Wishlist wishlist = Wishlist.builder()
-                .user(user)
-                .product(product)
-                .dateAdded(LocalDateTime.now())
-                .build();
+        Wishlist wishlist =
+                Wishlist.builder().user(user).product(product).dateAdded(LocalDateTime.now()).build();
 
         wishlistRepository.save(wishlist);
         return true;
     }
 
-
     public boolean removeFromWishlist(User user, Long productId) {
 
         Wishlist wishlist = wishlistRepository.findByUserAndProductId(user, productId);
         if (wishlist == null) {
-            return false;  
+            return false;
         }
-
 
         wishlistRepository.delete(wishlist);
         return true;
     }
 
-
     public Set<WishlistDTO> getWishlist(User user) {
         Set<Wishlist> wishlists = wishlistRepository.findByUser(user);
-        return wishlists.stream().map(wishlist -> {
-            WishlistDTO dto = new WishlistDTO();
-            dto.setId(wishlist.getId());
-            dto.setUserId(wishlist.getUser().getId());
-            dto.setProductId(wishlist.getProduct().getId());
-            dto.setDateAdded(wishlist.getDateAdded());
-            return dto;
-        }).collect(Collectors.toSet());
+        return wishlists.stream()
+                .map(
+                        wishlist -> {
+                            WishlistDTO dto = new WishlistDTO();
+                            dto.setId(wishlist.getId());
+                            dto.setUserId(wishlist.getUser().getId());
+                            dto.setProductId(wishlist.getProduct().getId());
+                            dto.setDateAdded(wishlist.getDateAdded());
+                            return dto;
+                        })
+                .collect(Collectors.toSet());
     }
 }

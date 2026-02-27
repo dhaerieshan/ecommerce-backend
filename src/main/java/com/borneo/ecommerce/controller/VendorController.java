@@ -21,12 +21,17 @@ public class VendorController {
             description = "Returns a welcome message and dashboard summary for the authenticated vendor.",
             security = @SecurityRequirement(name = "bearerAuth"),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Vendor dashboard data retrieved",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Vendor dashboard data retrieved",
                             content = @Content(schema = @Schema(implementation = MessageResponse.class))),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized - JWT token missing or invalid"),
-                    @ApiResponse(responseCode = "403", description = "Forbidden - Access restricted to VENDOR role only")
-            }
-    )
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized - JWT token missing or invalid"),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden - Access restricted to VENDOR role only")
+            })
     @GetMapping("/dashboard")
     public String vendorDashboard() {
         return "Welcome to the Vendor Dashboard!";

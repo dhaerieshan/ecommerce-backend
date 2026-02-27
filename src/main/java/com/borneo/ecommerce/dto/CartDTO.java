@@ -14,10 +14,16 @@ import java.util.stream.Collectors;
 @Schema(description = "Shopping cart details")
 public class CartDTO {
 
-    @Schema(description = "ID of the user who owns the cart", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(
+            description = "ID of the user who owns the cart",
+            example = "1",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private Long userId;
 
-    @Schema(description = "Username of the cart owner", example = "Dhaerieshan", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(
+            description = "Username of the cart owner",
+            example = "Dhaerieshan",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private String username;
 
     @Schema(description = "List of items in the cart")
@@ -26,9 +32,7 @@ public class CartDTO {
     public CartDTO(Cart cart) {
         this.userId = cart.getUser().getId();
         this.username = cart.getUser().getUsername();
-        this.items = cart.getItems().stream()
-                .map(CartItemDTO::new)
-                .collect(Collectors.toList());
+        this.items = cart.getItems().stream().map(CartItemDTO::new).collect(Collectors.toList());
     }
 
     @Data

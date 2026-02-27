@@ -29,10 +29,14 @@ public class CategoryServiceImpl implements CategoryService {
         category.setImagePath(categoryDTO.getImagePath());
         category.setBannerPath(categoryDTO.getBannerPath());
 
-
         if (categoryDTO.getParentId() != null) {
-            Category parentCategory = categoryRepository.findById(categoryDTO.getParentId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Parent category not found with id: " + categoryDTO.getParentId()));
+            Category parentCategory =
+                    categoryRepository
+                            .findById(categoryDTO.getParentId())
+                            .orElseThrow(
+                                    () ->
+                                            new ResourceNotFoundException(
+                                                    "Parent category not found with id: " + categoryDTO.getParentId()));
             category.setParent(parentCategory);
         }
 
@@ -44,36 +48,44 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional(readOnly = true)
     public List<CategoryDTO> getAllCategories() {
         List<Category> topLevelCategories = categoryRepository.findByParentIsNull();
-        return topLevelCategories.stream()
-                .map(CategoryDTO::new)
-                .collect(Collectors.toList());
+        return topLevelCategories.stream().map(CategoryDTO::new).collect(Collectors.toList());
     }
-
-
 
     @Override
     @Transactional
     public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
+        Category category =
+                categoryRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
 
-        if (!category.getName().equals(categoryDTO.getName()) && categoryRepository.existsByName(categoryDTO.getName())) {
+        if (!category.getName().equals(categoryDTO.getName())
+                && categoryRepository.existsByName(categoryDTO.getName())) {
             throw new IllegalArgumentException("Category with the same name already exists.");
         }
 
         category.setName(categoryDTO.getName());
-        category.setImagePath(categoryDTO.getImagePath() != null ? categoryDTO.getImagePath() : category.getImagePath());
-        category.setBannerPath(categoryDTO.getBannerPath() != null ? categoryDTO.getBannerPath() : category.getBannerPath());
+        category.setImagePath(
+                categoryDTO.getImagePath() != null ? categoryDTO.getImagePath() : category.getImagePath());
+        category.setBannerPath(
+                categoryDTO.getBannerPath() != null
+                        ? categoryDTO.getBannerPath()
+                        : category.getBannerPath());
 
         if (categoryDTO.getParentId() != null) {
             if (categoryDTO.getParentId().equals(id)) {
                 throw new IllegalArgumentException("Category cannot be its own parent.");
             }
-            Category parent = categoryRepository.findById(categoryDTO.getParentId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Parent category not found with id: " + categoryDTO.getParentId()));
+            Category parent =
+                    categoryRepository
+                            .findById(categoryDTO.getParentId())
+                            .orElseThrow(
+                                    () ->
+                                            new ResourceNotFoundException(
+                                                    "Parent category not found with id: " + categoryDTO.getParentId()));
             category.setParent(parent);
         } else {
-            category.setParent(null);    
+            category.setParent(null);
         }
 
         Category updatedCategory = categoryRepository.save(category);
@@ -83,8 +95,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void deleteCategory(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
+        Category category =
+                categoryRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
 
         categoryRepository.delete(category);
     }
@@ -92,24 +106,24 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional(readOnly = true)
     public CategoryDTO getCategoryById(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
+        Category category =
+                categoryRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
         return new CategoryDTO(category);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CategoryDTO> getSubcategories(Long id) {
-        Category parent = categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Parent category not found with id: " + id));
-
+        Category parent =
+                categoryRepository
+                        .findById(id)
+                        .orElseThrow(
+                                () -> new ResourceNotFoundException("Parent category not found with id: " + id));
 
         List<Category> subcategories = parent.getSubcategories();
 
-
-        return subcategories.stream()
-                .map(CategoryDTO::new)    
-                .collect(Collectors.toList());
+        return subcategories.stream().map(CategoryDTO::new).collect(Collectors.toList());
     }
-
 }

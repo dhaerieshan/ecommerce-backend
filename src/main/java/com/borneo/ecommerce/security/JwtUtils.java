@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class JwtUtils {
 
     private static final long JWT_EXPIRATION_MS = 86400000;
+
     @Value("${app.jwtSecret}")
     private String jwtSecret;
 
@@ -29,7 +30,6 @@ public class JwtUtils {
 
     @Autowired
     private UserRepository userRepository;
-
 
     @PostConstruct
     public void init() {
@@ -45,13 +45,17 @@ public class JwtUtils {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
+
     public String getUserNameFromJwtToken(String token) {
         try {
-            String username = Jwts.parserBuilder().setSigningKey(key).build()
-                    .parseClaimsJws(token)
-                    .getBody()
-                    .getSubject();
-            System.out.println(("Extracted username from token: {}"+ username));
+            String username =
+                    Jwts.parserBuilder()
+                            .setSigningKey(key)
+                            .build()
+                            .parseClaimsJws(token)
+                            .getBody()
+                            .getSubject();
+            System.out.println(("Extracted username from token: {}" + username));
             return username;
         } catch (Exception e) {
             System.out.println("Error extracting username from token: {}" + e.getMessage());
@@ -60,12 +64,13 @@ public class JwtUtils {
     }
 
     public String getRoleFromJwtToken(String token) {
-        String role = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("role", String.class);    
+        String role =
+                Jwts.parserBuilder()
+                        .setSigningKey(key)
+                        .build()
+                        .parseClaimsJws(token)
+                        .getBody()
+                        .get("role", String.class);
         System.out.println(("Extracted username from token: {}" + role));
         return role;
     }
@@ -75,17 +80,16 @@ public class JwtUtils {
         Optional<User> userOptional = Optional.ofNullable(userRepository.findByUsername(username));
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            return user.getRoles().stream()
-                    .map(Role::getName)
-                    .collect(Collectors.joining(", "));
+            return user.getRoles().stream().map(Role::getName).collect(Collectors.joining(", "));
         }
         return "";
     }
-    public boolean validateJwtToken(String authToken){
-        try{
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken);   
+
+    public boolean validateJwtToken(String authToken) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken);
             return true;
-        }catch (JwtException e){
+        } catch (JwtException e) {
             System.out.println("Invalid JWT token: " + e.getMessage());
         }
         return false;

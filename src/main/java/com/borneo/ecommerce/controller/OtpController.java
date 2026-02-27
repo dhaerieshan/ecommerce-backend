@@ -30,20 +30,23 @@ public class OtpController {
 
     @Operation(
             summary = "Send OTP",
-            description = "Generates a 6-digit OTP and sends it to the provided email address for verification.",
-            requestBody = @RequestBody(
+            description =
+                    "Generates a 6-digit OTP and sends it to the provided email address for verification.",
+            requestBody =
+            @RequestBody(
                     description = "Email address to send OTP to",
                     required = true,
-                    content = @Content(schema = @Schema(example = "{\"email\": \"john@example.com\"}"))
-            ),
+                    content = @Content(schema = @Schema(example = "{\"email\": \"john@example.com\"}"))),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "OTP sent successfully to email",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "OTP sent successfully to email",
                             content = @Content(schema = @Schema(implementation = MessageResponse.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid or missing email address")
-            }
-    )
+            })
     @PostMapping("/send")
-    public String sendOtp(@org.springframework.web.bind.annotation.RequestBody Map<String, String> request) {
+    public String sendOtp(
+            @org.springframework.web.bind.annotation.RequestBody Map<String, String> request) {
         String email = request.get("email");
         String otp = createOtp();
         emailService.sendOtp(email, otp);
@@ -53,19 +56,25 @@ public class OtpController {
     @Operation(
             summary = "Verify OTP",
             description = "Verifies the OTP entered by the user against the one sent to their email.",
-            requestBody = @RequestBody(
+            requestBody =
+            @RequestBody(
                     description = "Email and OTP for verification",
                     required = true,
-                    content = @Content(schema = @Schema(example = "{\"email\": \"john@example.com\", \"otp\": \"123456\"}"))
-            ),
+                    content =
+                    @Content(
+                            schema =
+                            @Schema(
+                                    example = "{\"email\": \"john@example.com\", \"otp\": \"123456\"}"))),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "OTP verified successfully",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "OTP verified successfully",
                             content = @Content(schema = @Schema(implementation = MessageResponse.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid or expired OTP")
-            }
-    )
+            })
     @PostMapping("/verify")
-    public String verifyOtp(@org.springframework.web.bind.annotation.RequestBody Map<String, String> request) {
+    public String verifyOtp(
+            @org.springframework.web.bind.annotation.RequestBody Map<String, String> request) {
         String email = request.get("email");
         String otp = request.get("otp");
         if (emailService.verifyOtp(email, otp)) {

@@ -45,7 +45,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
@@ -59,40 +60,48 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
+        http.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/otp/**").permitAll()
+                .authorizeHttpRequests(
+                        authorize ->
+                                authorize
+                                        .requestMatchers(HttpMethod.OPTIONS, "/**")
+                                        .permitAll()
+                                        .requestMatchers("/api/auth/**")
+                                        .permitAll()
+                                        .requestMatchers("/api/otp/**")
+                                        .permitAll()
 
-                        // Public APIs
-                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
-                        .requestMatchers("/images/**").permitAll()
+                                        // Public APIs
+                                        .requestMatchers(HttpMethod.GET, "/api/products/**")
+                                        .permitAll()
+                                        .requestMatchers(HttpMethod.GET, "/api/categories/**")
+                                        .permitAll()
+                                        .requestMatchers("/images/**")
+                                        .permitAll()
 
-                        // Product Restrictions
-                        .requestMatchers(HttpMethod.POST, "/api/products/**").hasAnyAuthority("ADMIN", "VENDOR")
-                        .requestMatchers(HttpMethod.PUT, "/api/products/**").hasAnyAuthority("ADMIN", "VENDOR")
-                        .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasAuthority("ADMIN")
+                                        // Product Restrictions
+                                        .requestMatchers(HttpMethod.POST, "/api/products/**")
+                                        .hasAnyAuthority("ADMIN", "VENDOR")
+                                        .requestMatchers(HttpMethod.PUT, "/api/products/**")
+                                        .hasAnyAuthority("ADMIN", "VENDOR")
+                                        .requestMatchers(HttpMethod.DELETE, "/api/products/**")
+                                        .hasAuthority("ADMIN")
 
-                        // Role-based APIs
-                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
-                        .requestMatchers("/api/vendor/**").hasAuthority("VENDOR")
+                                        // Role-based APIs
+                                        .requestMatchers("/api/admin/**")
+                                        .hasAuthority("ADMIN")
+                                        .requestMatchers("/api/vendor/**")
+                                        .hasAuthority("VENDOR")
 
-                        // Swagger
-                        .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-
-                        .anyRequest().authenticated()
-
-                )
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(unauthorizedHandler)
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                                        // Swagger
+                                        .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**")
+                                        .permitAll()
+                                        .anyRequest()
+                                        .authenticated())
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+                .sessionManagement(
+                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -102,12 +111,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:3000",
-                "http://192.168.0.3:3000"
-                // Add your deployed frontend URL here when ready
-        ));
-        configuration.setAllowedMethods(Arrays.asList("GET", "PATCH", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedOrigins(
+                Arrays.asList(
+                        "http://localhost:3000", "http://192.168.0.3:3000"
+                        // Add your deployed frontend URL here when ready
+                ));
+        configuration.setAllowedMethods(
+                Arrays.asList("GET", "PATCH", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
         configuration.setAllowCredentials(true);

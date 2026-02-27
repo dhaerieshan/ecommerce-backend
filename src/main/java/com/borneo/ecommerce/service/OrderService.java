@@ -22,9 +22,10 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final OrderItemRepository orderItemRepository;
 
-
-
-    public OrderService(OrderRepository orderRepository, ProductRepository productRepository, OrderItemRepository orderItemRepository) {
+    public OrderService(
+            OrderRepository orderRepository,
+            ProductRepository productRepository,
+            OrderItemRepository orderItemRepository) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.orderItemRepository = orderItemRepository;
@@ -42,15 +43,21 @@ public class OrderService {
 
         for (OrderItem itemDTO : items) {
             OrderItem orderItem = new OrderItem();
-            Product product = productRepository.findById(itemDTO.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Product not found with ID: " + itemDTO.getProductId()));
+            Product product =
+                    productRepository
+                            .findById(itemDTO.getProductId())
+                            .orElseThrow(
+                                    () ->
+                                            new RuntimeException("Product not found with ID: " + itemDTO.getProductId()));
 
             orderItem.setProduct(product);
             orderItem.setQuantity(itemDTO.getQuantity());
             orderItem.setPrice(BigDecimal.valueOf(product.getPrice()));
             orderItem.setOrder(order);
 
-            BigDecimal itemTotal = BigDecimal.valueOf(product.getPrice()).multiply(BigDecimal.valueOf(itemDTO.getQuantity()));
+            BigDecimal itemTotal =
+                    BigDecimal.valueOf(product.getPrice())
+                            .multiply(BigDecimal.valueOf(itemDTO.getQuantity()));
             totalAmount = totalAmount.add(itemTotal);
 
             orderItems.add(orderItem);
@@ -75,13 +82,15 @@ public class OrderService {
 
         return savedOrder;
     }
+
     public List<Order> getOrdersByUser(User user) {
         return orderRepository.findByUserOrderByOrderDateDesc(user);
     }
 
     //   Fetch a single order by ID
     public Order getOrderById(Long orderId, User user) {
-        return orderRepository.findByIdAndUser(orderId, user)
+        return orderRepository
+                .findByIdAndUser(orderId, user)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
     }
 
