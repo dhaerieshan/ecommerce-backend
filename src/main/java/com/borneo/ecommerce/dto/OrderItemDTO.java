@@ -4,54 +4,41 @@ import com.borneo.ecommerce.model.OrderItem;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Data
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Individual order item")
+@Schema(description = "Individual item within an order")
 public class OrderItemDTO {
 
-    @Schema(
-            description = "Order ID this item belongs to",
-            example = "101",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private Long orderId;
+  @Schema(description = "ID of the parent order", example = "101")
+  private Long orderId;
 
-    @Schema(description = "Product ID", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
-    private Long productId;
+  @Schema(description = "Product ID", example = "5")
+  private Long productId;
 
-    @Schema(
-            description = "Product name",
-            example = "Samsung Galaxy S26",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private String productName;
+  @Schema(description = "Product name at time of order", example = "Samsung Galaxy S24")
+  private String productName;
 
-    @Schema(
-            description = "Product image path",
-            example = "/images/samsung-s26.jpg",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private String productImage;
+  @Schema(description = "Product image path", example = "/images/samsung-s24.jpg")
+  private String productImage;
 
-    @Schema(description = "Quantity ordered", example = "1")
-    private int quantity;
+  @Schema(description = "Quantity ordered", example = "2")
+  private int quantity;
 
-    @Schema(
-            description = "Price per unit at time of order",
-            example = "999.00",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private BigDecimal price;
+  @Schema(description = "Unit price at time of order", example = "89999.00")
+  private BigDecimal price;
 
-    public OrderItemDTO(OrderItem orderItem) {
-        this.orderId = orderItem.getOrder().getId();
-        this.productId = orderItem.getProduct().getId();
-        this.productName = orderItem.getProduct().getName();
-        this.productImage = orderItem.getProduct().getImagePath();
-        this.quantity = orderItem.getQuantity();
-        this.price = orderItem.getPrice();
-    }
+  // ✅ BUG FIX — was completely empty before, returning null/0 for all fields
+  public OrderItemDTO(OrderItem orderItem) {
+    this.orderId = orderItem.getOrder() != null ? orderItem.getOrder().getId() : null;
+    this.productId = orderItem.getProductId();
+    this.productName = orderItem.getProduct().getName();
+    this.productImage = orderItem.getProduct().getImagePath();
+    this.quantity = orderItem.getQuantity();
+    this.price = orderItem.getPrice();
+  }
 }

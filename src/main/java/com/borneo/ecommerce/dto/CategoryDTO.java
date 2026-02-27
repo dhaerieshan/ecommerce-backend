@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Category details")
+@Schema(description = "Product category")
 public class CategoryDTO {
 
     @Schema(description = "Category ID", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
@@ -28,12 +28,12 @@ public class CategoryDTO {
     private String imagePath;
 
     @Schema(
-            description = "Category banner image path",
+            description = "Category banner path",
             example = "/images/electronics-banner.jpg",
             accessMode = Schema.AccessMode.READ_ONLY)
     private String bannerPath;
 
-    @Schema(description = "Parent category ID (null if root category)", example = "null")
+    @Schema(description = "Parent category ID (null if top-level)", example = "null")
     private Long parentId;
 
     @Schema(description = "List of subcategories under this category")

@@ -12,31 +12,38 @@ public class SignupRequest {
 
     @NotBlank
     @Size(min = 3, max = 40)
-    @Schema(description = "Unique username", example = "Dhaerieshan")
+    @Schema(description = "Unique username", example = "priya_user", minLength = 3, maxLength = 40)
     private String username;
 
     @NotBlank
     @Size(min = 8, max = 50)
-    @Schema(description = "Password (min 8 characters)", example = "password@123")
+    @Schema(
+            description = "Password (min 8 characters)",
+            example = "password@123",
+            minLength = 8,
+            maxLength = 50)
     private String password;
 
     @NotBlank
     @Email
-    @Schema(description = "Valid email address", example = "Dhaerie@example.com")
+    @Schema(description = "Valid email address", example = "priya@example.com")
     private String email;
 
-    @Schema(description = "Signup type: USER, VENDOR", example = "USER")
+    @Schema(
+            description = "Account type: USER (default), VENDOR, or ADMIN",
+            example = "USER",
+            allowableValues = {"USER", "VENDOR", "ADMIN"})
     private String signUpType;
 
-    @Schema(description = "Secret code required for ADMIN/VENDOR signup", example = "SECRET123")
+    @Schema(description = "Required only for VENDOR or ADMIN signup", example = "secret123")
     private String secretCode;
 
-    @Schema(description = "First name", example = "Dhaerieshan")
+    @Schema(description = "First name", example = "Priya")
     private String firstName;
 
-    @Schema(description = "Last name", example = "M")
+    @Schema(description = "Last name", example = "Sharma")
     private String lastName;
 
-    @Schema(description = "Delivery address", example = "123 Main Street, Chennai, Tamil Nadu")
+    @Schema(description = "Delivery address", example = "45 MG Road, Bangalore")
     private String address;
 }

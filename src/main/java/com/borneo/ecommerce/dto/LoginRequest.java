@@ -5,14 +5,14 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-@Schema(description = "User login request")
+@Schema(description = "Login credentials")
 public class LoginRequest {
 
     @NotBlank
-    @Schema(description = "Your registered username", example = "Dhaerieshan")
+    @Schema(description = "Username", example = "priya_user")
     private String username;
 
     @NotBlank
-    @Schema(description = "Your password", example = "password@123")
+    @Schema(description = "Password", example = "password")
     private String password;
 }

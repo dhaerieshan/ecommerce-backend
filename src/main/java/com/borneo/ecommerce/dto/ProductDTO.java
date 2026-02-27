@@ -15,31 +15,31 @@ public class ProductDTO {
     private Long id;
 
     @NotBlank(message = "Product name is required")
-    @Schema(description = "Name of the product", example = "Samsung Galaxy S26")
+    @Schema(description = "Product name", example = "Samsung Galaxy S24")
     private String name;
 
     @Schema(
             description = "Product description",
-            example = "Latest Samsung flagship smartphone with AI features")
+            example = "6.2-inch display, 50MP camera, Snapdragon 8 Gen 3")
     private String description;
 
     @NotNull(message = "Price is required")
     @Positive(message = "Price must be positive")
-    @Schema(description = "Price of the product", example = "999")
+    @Schema(description = "Price in INR (paise/integer)", example = "89999")
     private int price;
 
     @NotNull(message = "Stock is required")
-    @Schema(description = "Available stock quantity", example = "50")
+    @Schema(description = "Available stock quantity", example = "100")
     private Integer stock;
 
     @Schema(
-            description = "Image file path",
-            example = "/images/samsung-s26.jpg",
+            description = "Image path",
+            example = "/images/samsung-s24.jpg",
             accessMode = Schema.AccessMode.READ_ONLY)
     private String imagePath;
 
     @NotNull(message = "Category is required")
-    @Schema(description = "ID of the category this product belongs to", example = "2")
+    @Schema(description = "Category ID this product belongs to", example = "2")
     private Long categoryId;
 
     public ProductDTO() {

@@ -6,27 +6,27 @@ import lombok.Data;
 import java.util.Set;
 
 @Data
-@Schema(description = "User details response")
+@Schema(description = "User details (admin view)")
 public class UserResponseDTO {
 
-    @Schema(description = "User ID", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(description = "User ID", example = "3")
     private Long id;
 
-    @Schema(description = "Username", example = "Dhaerieshan")
+    @Schema(description = "Username", example = "priya_user")
     private String username;
 
-    @Schema(description = "Valid email address", example = "Dhaerie@example.com")
+    @Schema(description = "Email address", example = "priya@example.com")
     private String email;
 
-    @Schema(description = "Assigned roles", example = "[\"ROLE_USER\"]")
+    @Schema(description = "Assigned roles", example = "[\"USER\"]")
     private Set<String> roles;
 
-    @Schema(description = "First name", example = "Dhaerieshan")
+    @Schema(description = "First name", example = "Priya")
     private String firstName;
 
-    @Schema(description = "Last name", example = "M")
+    @Schema(description = "Last name", example = "Sharma")
     private String lastName;
 
-    @Schema(description = "Delivery address", example = "123 Main Street, Chennai, Tamil Nadu")
+    @Schema(description = "Address", example = "45 MG Road, Bangalore")
     private String address;
 }

@@ -5,10 +5,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-@Schema(description = "Individual cart item")
+@Schema(description = "A single item inside a cart")
 public class CartItemDTO {
 
-    @Schema(description = "Cart item ID", example = "10", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(description = "Cart item ID", example = "10")
     private Long id;
 
     @Schema(description = "Product details")
