@@ -1,11 +1,15 @@
 package com.borneo.ecommerce.controller;
 
+import com.borneo.ecommerce.dto.MessageResponse;
 import com.borneo.ecommerce.service.EmailService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,26 +29,45 @@ public class OtpController {
     }
 
     @Operation(
-            summary = "Generate OTP",
-            description = "Generates and sends OTP for email Verification."
+            summary = "Send OTP",
+            description = "Generates a 6-digit OTP and sends it to the provided email address for verification.",
+            requestBody = @RequestBody(
+                    description = "Email address to send OTP to",
+                    required = true,
+                    content = @Content(schema = @Schema(example = "{\"email\": \"john@example.com\"}"))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OTP sent successfully to email",
+                            content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid or missing email address")
+            }
     )
     @PostMapping("/send")
-    public String sendOtp(@RequestBody Map<String, String> request) {
+    public String sendOtp(@org.springframework.web.bind.annotation.RequestBody Map<String, String> request) {
         String email = request.get("email");
         String otp = createOtp();
         emailService.sendOtp(email, otp);
-        return "OTP sent successfully";  // Never expose OTP in response
+        return "OTP sent successfully";
     }
 
     @Operation(
             summary = "Verify OTP",
-            description = "Verify OTP for email Verification."
+            description = "Verifies the OTP entered by the user against the one sent to their email.",
+            requestBody = @RequestBody(
+                    description = "Email and OTP for verification",
+                    required = true,
+                    content = @Content(schema = @Schema(example = "{\"email\": \"john@example.com\", \"otp\": \"123456\"}"))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OTP verified successfully",
+                            content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid or expired OTP")
+            }
     )
     @PostMapping("/verify")
-    public String verifyOtp(@RequestBody Map<String, String> request) {
+    public String verifyOtp(@org.springframework.web.bind.annotation.RequestBody Map<String, String> request) {
         String email = request.get("email");
         String otp = request.get("otp");
-
         if (emailService.verifyOtp(email, otp)) {
             return "OTP verified successfully!";
         }

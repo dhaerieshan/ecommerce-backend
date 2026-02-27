@@ -6,9 +6,9 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
-
 @Data
 @Entity
+@Table(name = "carts")
 public class Cart {
 
     @Id
@@ -22,6 +22,4 @@ public class Cart {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<CartItem> items = new ArrayList<>();
-
-
 }

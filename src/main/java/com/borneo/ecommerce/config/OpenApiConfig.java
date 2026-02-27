@@ -3,9 +3,7 @@ package com.borneo.ecommerce.config;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -37,14 +35,5 @@ public class OpenApiConfig {
                                         .bearerFormat("JWT")));
     }
 
-    @Bean
-    public OperationCustomizer globalResponses() {
-        return (operation, handlerMethod) -> {
-            operation.getResponses().addApiResponse("401",
-                    new ApiResponse().description("Unauthorized - Invalid or missing JWT token"));
-            operation.getResponses().addApiResponse("403",
-                    new ApiResponse().description("Forbidden - Insufficient permissions"));
-            return operation;
-        };
-    }
+
 }
