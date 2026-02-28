@@ -1,9 +1,8 @@
 package com.borneo.ecommerce.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-
 import java.time.LocalDateTime;
+import lombok.Data;
 
 @Data
 @Schema(description = "Wishlist item")

@@ -7,6 +7,6 @@ import lombok.Data;
 @Schema(description = "Request to remove a product from the cart")
 public class RemoveFromCartRequest {
 
-    @Schema(description = "ID of the product to remove", example = "5")
-    private Long productId;
+  @Schema(description = "ID of the product to remove", example = "5")
+  private Long productId;
 }

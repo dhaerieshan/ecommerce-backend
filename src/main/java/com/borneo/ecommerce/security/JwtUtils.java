@@ -8,15 +8,14 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtils {
@@ -28,8 +27,7 @@ public class JwtUtils {
 
   private Key key;
 
-  @Autowired
-  private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
   @PostConstruct
   public void init() {
@@ -38,23 +36,23 @@ public class JwtUtils {
 
   public String generateJwtToken(String username, String role) {
     return Jwts.builder()
-            .setSubject(username)
-            .claim("role", role)
-            .setIssuedAt(new Date())
-            .setExpiration(new Date((new Date()).getTime() + JWT_EXPIRATION_MS))
-            .signWith(key, SignatureAlgorithm.HS256)
-            .compact();
+        .setSubject(username)
+        .claim("role", role)
+        .setIssuedAt(new Date())
+        .setExpiration(new Date((new Date()).getTime() + JWT_EXPIRATION_MS))
+        .signWith(key, SignatureAlgorithm.HS256)
+        .compact();
   }
 
   public String getUserNameFromJwtToken(String token) {
     try {
       String username =
-              Jwts.parserBuilder()
-                      .setSigningKey(key)
-                      .build()
-                      .parseClaimsJws(token)
-                      .getBody()
-                      .getSubject();
+          Jwts.parserBuilder()
+              .setSigningKey(key)
+              .build()
+              .parseClaimsJws(token)
+              .getBody()
+              .getSubject();
       System.out.println(("Extracted username from token: {}" + username));
       return username;
     } catch (Exception e) {
@@ -65,12 +63,12 @@ public class JwtUtils {
 
   public String getRoleFromJwtToken(String token) {
     String role =
-            Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody()
-                    .get("role", String.class);
+        Jwts.parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token)
+            .getBody()
+            .get("role", String.class);
     System.out.println(("Extracted username from token: {}" + role));
     return role;
   }

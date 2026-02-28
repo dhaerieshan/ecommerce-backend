@@ -7,13 +7,12 @@ import com.borneo.ecommerce.model.User;
 import com.borneo.ecommerce.repository.OrderItemRepository;
 import com.borneo.ecommerce.repository.OrderRepository;
 import com.borneo.ecommerce.repository.ProductRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrderService {
@@ -23,9 +22,9 @@ public class OrderService {
   private final OrderItemRepository orderItemRepository;
 
   public OrderService(
-          OrderRepository orderRepository,
-          ProductRepository productRepository,
-          OrderItemRepository orderItemRepository) {
+      OrderRepository orderRepository,
+      ProductRepository productRepository,
+      OrderItemRepository orderItemRepository) {
     this.orderRepository = orderRepository;
     this.productRepository = productRepository;
     this.orderItemRepository = orderItemRepository;
@@ -44,11 +43,11 @@ public class OrderService {
     for (OrderItem itemDTO : items) {
       OrderItem orderItem = new OrderItem();
       Product product =
-              productRepository
-                      .findById(itemDTO.getProductId())
-                      .orElseThrow(
-                              () ->
-                                      new RuntimeException("Product not found with ID: " + itemDTO.getProductId()));
+          productRepository
+              .findById(itemDTO.getProductId())
+              .orElseThrow(
+                  () ->
+                      new RuntimeException("Product not found with ID: " + itemDTO.getProductId()));
 
       orderItem.setProduct(product);
       orderItem.setQuantity(itemDTO.getQuantity());
@@ -56,8 +55,8 @@ public class OrderService {
       orderItem.setOrder(order);
 
       BigDecimal itemTotal =
-              BigDecimal.valueOf(product.getPrice())
-                      .multiply(BigDecimal.valueOf(itemDTO.getQuantity()));
+          BigDecimal.valueOf(product.getPrice())
+              .multiply(BigDecimal.valueOf(itemDTO.getQuantity()));
       totalAmount = totalAmount.add(itemTotal);
 
       orderItems.add(orderItem);
@@ -90,8 +89,8 @@ public class OrderService {
   //   Fetch a single order by ID
   public Order getOrderById(Long orderId, User user) {
     return orderRepository
-            .findByIdAndUser(orderId, user)
-            .orElseThrow(() -> new RuntimeException("Order not found"));
+        .findByIdAndUser(orderId, user)
+        .orElseThrow(() -> new RuntimeException("Order not found"));
   }
 
   @Transactional

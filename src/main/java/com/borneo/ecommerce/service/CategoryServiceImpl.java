@@ -4,126 +4,125 @@ import com.borneo.ecommerce.dto.CategoryDTO;
 import com.borneo.ecommerce.exception.ResourceNotFoundException;
 import com.borneo.ecommerce.model.Category;
 import com.borneo.ecommerce.repository.CategoryRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
-    private final CategoryRepository categoryRepository;
+  private final CategoryRepository categoryRepository;
 
-    @Override
-    @Transactional
-    public CategoryDTO createCategory(CategoryDTO categoryDTO) {
-        if (categoryRepository.existsByName(categoryDTO.getName())) {
-            throw new IllegalArgumentException("Category with the same name already exists.");
-        }
-
-        Category category = new Category();
-        category.setName(categoryDTO.getName());
-        category.setImagePath(categoryDTO.getImagePath());
-        category.setBannerPath(categoryDTO.getBannerPath());
-
-        if (categoryDTO.getParentId() != null) {
-            Category parentCategory =
-                    categoryRepository
-                            .findById(categoryDTO.getParentId())
-                            .orElseThrow(
-                                    () ->
-                                            new ResourceNotFoundException(
-                                                    "Parent category not found with id: " + categoryDTO.getParentId()));
-            category.setParent(parentCategory);
-        }
-
-        Category savedCategory = categoryRepository.save(category);
-        return new CategoryDTO(savedCategory);
+  @Override
+  @Transactional
+  public CategoryDTO createCategory(CategoryDTO categoryDTO) {
+    if (categoryRepository.existsByName(categoryDTO.getName())) {
+      throw new IllegalArgumentException("Category with the same name already exists.");
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<CategoryDTO> getAllCategories() {
-        List<Category> topLevelCategories = categoryRepository.findByParentIsNull();
-        return topLevelCategories.stream().map(CategoryDTO::new).collect(Collectors.toList());
+    Category category = new Category();
+    category.setName(categoryDTO.getName());
+    category.setImagePath(categoryDTO.getImagePath());
+    category.setBannerPath(categoryDTO.getBannerPath());
+
+    if (categoryDTO.getParentId() != null) {
+      Category parentCategory =
+          categoryRepository
+              .findById(categoryDTO.getParentId())
+              .orElseThrow(
+                  () ->
+                      new ResourceNotFoundException(
+                          "Parent category not found with id: " + categoryDTO.getParentId()));
+      category.setParent(parentCategory);
     }
 
-    @Override
-    @Transactional
-    public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
-        Category category =
-                categoryRepository
-                        .findById(id)
-                        .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
+    Category savedCategory = categoryRepository.save(category);
+    return new CategoryDTO(savedCategory);
+  }
 
-        if (!category.getName().equals(categoryDTO.getName())
-                && categoryRepository.existsByName(categoryDTO.getName())) {
-            throw new IllegalArgumentException("Category with the same name already exists.");
-        }
+  @Override
+  @Transactional(readOnly = true)
+  public List<CategoryDTO> getAllCategories() {
+    List<Category> topLevelCategories = categoryRepository.findByParentIsNull();
+    return topLevelCategories.stream().map(CategoryDTO::new).collect(Collectors.toList());
+  }
 
-        category.setName(categoryDTO.getName());
-        category.setImagePath(
-                categoryDTO.getImagePath() != null ? categoryDTO.getImagePath() : category.getImagePath());
-        category.setBannerPath(
-                categoryDTO.getBannerPath() != null
-                        ? categoryDTO.getBannerPath()
-                        : category.getBannerPath());
+  @Override
+  @Transactional
+  public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
+    Category category =
+        categoryRepository
+            .findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
 
-        if (categoryDTO.getParentId() != null) {
-            if (categoryDTO.getParentId().equals(id)) {
-                throw new IllegalArgumentException("Category cannot be its own parent.");
-            }
-            Category parent =
-                    categoryRepository
-                            .findById(categoryDTO.getParentId())
-                            .orElseThrow(
-                                    () ->
-                                            new ResourceNotFoundException(
-                                                    "Parent category not found with id: " + categoryDTO.getParentId()));
-            category.setParent(parent);
-        } else {
-            category.setParent(null);
-        }
-
-        Category updatedCategory = categoryRepository.save(category);
-        return new CategoryDTO(updatedCategory);
+    if (!category.getName().equals(categoryDTO.getName())
+        && categoryRepository.existsByName(categoryDTO.getName())) {
+      throw new IllegalArgumentException("Category with the same name already exists.");
     }
 
-    @Override
-    @Transactional
-    public void deleteCategory(Long id) {
-        Category category =
-                categoryRepository
-                        .findById(id)
-                        .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
+    category.setName(categoryDTO.getName());
+    category.setImagePath(
+        categoryDTO.getImagePath() != null ? categoryDTO.getImagePath() : category.getImagePath());
+    category.setBannerPath(
+        categoryDTO.getBannerPath() != null
+            ? categoryDTO.getBannerPath()
+            : category.getBannerPath());
 
-        categoryRepository.delete(category);
+    if (categoryDTO.getParentId() != null) {
+      if (categoryDTO.getParentId().equals(id)) {
+        throw new IllegalArgumentException("Category cannot be its own parent.");
+      }
+      Category parent =
+          categoryRepository
+              .findById(categoryDTO.getParentId())
+              .orElseThrow(
+                  () ->
+                      new ResourceNotFoundException(
+                          "Parent category not found with id: " + categoryDTO.getParentId()));
+      category.setParent(parent);
+    } else {
+      category.setParent(null);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public CategoryDTO getCategoryById(Long id) {
-        Category category =
-                categoryRepository
-                        .findById(id)
-                        .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
-        return new CategoryDTO(category);
-    }
+    Category updatedCategory = categoryRepository.save(category);
+    return new CategoryDTO(updatedCategory);
+  }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<CategoryDTO> getSubcategories(Long id) {
-        Category parent =
-                categoryRepository
-                        .findById(id)
-                        .orElseThrow(
-                                () -> new ResourceNotFoundException("Parent category not found with id: " + id));
+  @Override
+  @Transactional
+  public void deleteCategory(Long id) {
+    Category category =
+        categoryRepository
+            .findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
 
-        List<Category> subcategories = parent.getSubcategories();
+    categoryRepository.delete(category);
+  }
 
-        return subcategories.stream().map(CategoryDTO::new).collect(Collectors.toList());
-    }
+  @Override
+  @Transactional(readOnly = true)
+  public CategoryDTO getCategoryById(Long id) {
+    Category category =
+        categoryRepository
+            .findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
+    return new CategoryDTO(category);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<CategoryDTO> getSubcategories(Long id) {
+    Category parent =
+        categoryRepository
+            .findById(id)
+            .orElseThrow(
+                () -> new ResourceNotFoundException("Parent category not found with id: " + id));
+
+    List<Category> subcategories = parent.getSubcategories();
+
+    return subcategories.stream().map(CategoryDTO::new).collect(Collectors.toList());
+  }
 }

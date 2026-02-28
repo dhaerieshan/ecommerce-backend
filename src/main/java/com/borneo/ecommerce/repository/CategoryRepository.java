@@ -1,15 +1,14 @@
 package com.borneo.ecommerce.repository;
 
 import com.borneo.ecommerce.model.Category;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-    List<Category> findByParentIsNull();
+  List<Category> findByParentIsNull();
 
-    boolean existsByName(String name);
+  boolean existsByName(String name);
 }

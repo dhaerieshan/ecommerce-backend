@@ -1,19 +1,18 @@
 package com.borneo.ecommerce.service;
 
 import com.borneo.ecommerce.dto.CategoryDTO;
-
 import java.util.List;
 
 public interface CategoryService {
-    CategoryDTO createCategory(CategoryDTO categoryDTO);
+  CategoryDTO createCategory(CategoryDTO categoryDTO);
 
-    List<CategoryDTO> getAllCategories();
+  List<CategoryDTO> getAllCategories();
 
-    List<CategoryDTO> getSubcategories(Long id);
+  List<CategoryDTO> getSubcategories(Long id);
 
-    CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO);
+  CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO);
 
-    void deleteCategory(Long id);
+  void deleteCategory(Long id);
 
-    CategoryDTO getCategoryById(Long id);
+  CategoryDTO getCategoryById(Long id);
 }

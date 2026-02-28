@@ -13,12 +13,12 @@ public class OpenApiConfig {
   @Bean
   public OpenAPI customOpenAPI() {
     return new OpenAPI()
-            .info(
-                    new Info()
-                            .title("E-Commerce Backend API")
-                            .version("v1.0")
-                            .description(
-                                    """
+        .info(
+            new Info()
+                .title("E-Commerce Backend API")
+                .version("v1.0")
+                .description(
+                    """
                                 Complete REST API for E-Commerce platform.
 
                                 Features:
@@ -29,13 +29,13 @@ public class OpenApiConfig {
                                 - OTP Verification
                                 - Wishlist Management
                                 """))
-            .components(
-                    new Components()
-                            .addSecuritySchemes(
-                                    "bearerAuth",
-                                    new SecurityScheme()
-                                            .type(SecurityScheme.Type.HTTP)
-                                            .scheme("bearer")
-                                            .bearerFormat("JWT")));
+        .components(
+            new Components()
+                .addSecuritySchemes(
+                    "bearerAuth",
+                    new SecurityScheme()
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT")));
   }
 }

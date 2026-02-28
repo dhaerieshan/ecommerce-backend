@@ -17,39 +17,39 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/vendor")
 public class VendorController {
 
-    @Operation(
-            summary = "Get vendor dashboard",
-            description = "Returns a welcome message and dashboard summary for the authenticated vendor.",
-            security = @SecurityRequirement(name = "bearerAuth"),
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Vendor dashboard data retrieved",
-                            content =
-                            @Content(
-                                    schema = @Schema(implementation = MessageResponse.class),
-                                    examples =
-                                    @ExampleObject(
-                                            value = "{\"message\": \"Welcome to the Vendor Dashboard!\"}"))),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Unauthorized - JWT token missing or invalid",
-                            content =
-                            @Content(
-                                    schema = @Schema(implementation = MessageResponse.class),
-                                    examples = @ExampleObject(value = "{\"message\": \"Unauthorized\"}"))),
-                    @ApiResponse(
-                            responseCode = "403",
-                            description = "Forbidden - Access restricted to VENDOR role only",
-                            content =
-                            @Content(
-                                    schema = @Schema(implementation = MessageResponse.class),
-                                    examples =
-                                    @ExampleObject(
-                                            value = "{\"message\": \"Access denied: insufficient permissions\"}")))
-            })
-    @GetMapping("/dashboard")
-    public String vendorDashboard() {
-        return "Welcome to the Vendor Dashboard!";
-    }
+  @Operation(
+      summary = "Get vendor dashboard",
+      description = "Returns a welcome message and dashboard summary for the authenticated vendor.",
+      security = @SecurityRequirement(name = "bearerAuth"),
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Vendor dashboard data retrieved",
+            content =
+                @Content(
+                    schema = @Schema(implementation = MessageResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value = "{\"message\": \"Welcome to the Vendor Dashboard!\"}"))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized - JWT token missing or invalid",
+            content =
+                @Content(
+                    schema = @Schema(implementation = MessageResponse.class),
+                    examples = @ExampleObject(value = "{\"message\": \"Unauthorized\"}"))),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Forbidden - Access restricted to VENDOR role only",
+            content =
+                @Content(
+                    schema = @Schema(implementation = MessageResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value = "{\"message\": \"Access denied: insufficient permissions\"}")))
+      })
+  @GetMapping("/dashboard")
+  public String vendorDashboard() {
+    return "Welcome to the Vendor Dashboard!";
+  }
 }

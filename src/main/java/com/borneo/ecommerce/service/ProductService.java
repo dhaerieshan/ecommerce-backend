@@ -1,27 +1,26 @@
 package com.borneo.ecommerce.service;
 
 import com.borneo.ecommerce.dto.ProductDTO;
-
 import java.util.List;
 
 public interface ProductService {
-    ProductDTO createProduct(ProductDTO productDTO);
+  ProductDTO createProduct(ProductDTO productDTO);
 
-    List<ProductDTO> getAllProducts();
+  List<ProductDTO> getAllProducts();
 
-    void updateProduct(Long id, ProductDTO productDTO);
+  void updateProduct(Long id, ProductDTO productDTO);
 
-    void deleteProduct(Long id);
+  void deleteProduct(Long id);
 
-    List<ProductDTO> getSuggestedProducts(Long productId);
+  List<ProductDTO> getSuggestedProducts(Long productId);
 
-    List<ProductDTO> findByCategoryId(Long categoryId);
+  List<ProductDTO> findByCategoryId(Long categoryId);
 
-    ProductDTO getProductById(Long id);
+  ProductDTO getProductById(Long id);
 
-    List<ProductDTO> searchProducts(String query);
+  List<ProductDTO> searchProducts(String query);
 
-    List<ProductDTO> findProductsByCategoryAndSubcategories(Long categoryId);
+  List<ProductDTO> findProductsByCategoryAndSubcategories(Long categoryId);
 
-    void reduceStock(Long productId, int quantity);
+  void reduceStock(Long productId, int quantity);
 }

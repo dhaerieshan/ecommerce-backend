@@ -1,5 +1,10 @@
 package com.borneo.ecommerce;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.borneo.ecommerce.dto.LoginRequest;
 import com.borneo.ecommerce.dto.UserUpdateRequest;
 import com.borneo.ecommerce.model.Role;
@@ -7,6 +12,8 @@ import com.borneo.ecommerce.model.User;
 import com.borneo.ecommerce.repository.RoleRepository;
 import com.borneo.ecommerce.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,30 +25,18 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class EcommerceApplicationTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-  @Autowired
-  private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
-  @Autowired
-  private RoleRepository roleRepository;
+  @Autowired private RoleRepository roleRepository;
 
-  @Autowired
-  private PasswordEncoder passwordEncoder;
+  @Autowired private PasswordEncoder passwordEncoder;
 
   private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -88,14 +83,14 @@ public class EcommerceApplicationTest {
     loginRequest.setPassword("user");
 
     MvcResult result =
-            mockMvc
-                    .perform(
-                            post("/api/auth/signin")
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .content(objectMapper.writeValueAsString(loginRequest)))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.token").exists())
-                    .andReturn();
+        mockMvc
+            .perform(
+                post("/api/auth/signin")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(loginRequest)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.token").exists())
+            .andReturn();
 
     String responseContent = result.getResponse().getContentAsString();
     token = objectMapper.readTree(responseContent).get("token").asText();
@@ -104,12 +99,12 @@ public class EcommerceApplicationTest {
     userUpdateRequest.setUsername("User");
 
     mockMvc
-            .perform(
-                    get("/api/user/update")
-                            .header("Authorization", "BEARER " + token)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(userUpdateRequest)))
-            .andExpect(status().isOk());
+        .perform(
+            get("/api/user/update")
+                .header("Authorization", "BEARER " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userUpdateRequest)))
+        .andExpect(status().isOk());
   }
 
   @Test
@@ -120,23 +115,23 @@ public class EcommerceApplicationTest {
     loginRequest.setPassword("user");
 
     MvcResult result =
-            mockMvc
-                    .perform(
-                            post("/api/auth/signin")
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .content(objectMapper.writeValueAsString(loginRequest)))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.token").exists())
-                    .andReturn();
+        mockMvc
+            .perform(
+                post("/api/auth/signin")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(loginRequest)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.token").exists())
+            .andReturn();
 
     String responseContent = result.getResponse().getContentAsString();
     token = objectMapper.readTree(responseContent).get("token").asText();
 
     mockMvc
-            .perform(get("/api/user/profile").header("Authorization", "BEARER " + token))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.username").value("User"))
-            .andExpect(jsonPath("$.email").value("user@gmail.com"));
+        .perform(get("/api/user/profile").header("Authorization", "BEARER " + token))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.username").value("User"))
+        .andExpect(jsonPath("$.email").value("user@gmail.com"));
   }
 
   @Test
@@ -147,22 +142,22 @@ public class EcommerceApplicationTest {
     loginRequest.setPassword("admin");
 
     MvcResult result =
-            mockMvc
-                    .perform(
-                            post("/api/auth/signin")
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .content(objectMapper.writeValueAsString(loginRequest)))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.token").exists())
-                    .andReturn();
+        mockMvc
+            .perform(
+                post("/api/auth/signin")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(loginRequest)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.token").exists())
+            .andReturn();
 
     String responseContent = result.getResponse().getContentAsString();
     token = objectMapper.readTree(responseContent).get("token").asText();
 
     mockMvc
-            .perform(get("/api/admin/userlist").header("Authorization", "BEARER " + token))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.users").isArray())
-            .andReturn();
+        .perform(get("/api/admin/userlist").header("Authorization", "BEARER " + token))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.users").isArray())
+        .andReturn();
   }
 }

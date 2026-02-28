@@ -3,6 +3,7 @@ package com.borneo.ecommerce.config;
 import com.borneo.ecommerce.security.JwtAuthenticationEntryPoint;
 import com.borneo.ecommerce.security.JwtRequestFilter;
 import com.borneo.ecommerce.service.CustomUserDetailsService;
+import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,21 +25,16 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
-  @Autowired
-  private CustomUserDetailsService userDetailsService;
+  @Autowired private CustomUserDetailsService userDetailsService;
 
-  @Autowired
-  private JwtAuthenticationEntryPoint unauthorizedHandler;
+  @Autowired private JwtAuthenticationEntryPoint unauthorizedHandler;
 
-  @Autowired
-  private JwtRequestFilter jwtRequestFilter;
+  @Autowired private JwtRequestFilter jwtRequestFilter;
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -46,7 +43,7 @@ public class SecurityConfig {
 
   @Bean
   public AuthenticationManager authenticationManager(
-          AuthenticationConfiguration authenticationConfiguration) throws Exception {
+      AuthenticationConfiguration authenticationConfiguration) throws Exception {
     return authenticationConfiguration.getAuthenticationManager();
   }
 
@@ -60,50 +57,50 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .authorizeHttpRequests(
-                    authorize ->
-                            authorize
-                                    .requestMatchers(HttpMethod.OPTIONS, "/**")
-                                    .permitAll()
-                                    .requestMatchers("/api/auth/**")
-                                    .permitAll()
-                                    .requestMatchers("/api/otp/**")
-                                    .permitAll()
+    http.csrf(AbstractHttpConfigurer::disable)
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .authorizeHttpRequests(
+            authorize ->
+                authorize
+                    .requestMatchers(HttpMethod.OPTIONS, "/**")
+                    .permitAll()
+                    .requestMatchers("/api/auth/**")
+                    .permitAll()
+                    .requestMatchers("/api/otp/**")
+                    .permitAll()
 
-                                    // Public APIs
-                                    .requestMatchers(HttpMethod.GET, "/api/products/**")
-                                    .permitAll()
-                                    .requestMatchers(HttpMethod.GET, "/api/categories/**")
-                                    .permitAll()
-                                    .requestMatchers("/images/**")
-                                    .permitAll()
+                    // Public APIs
+                    .requestMatchers(HttpMethod.GET, "/api/products/**")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/categories/**")
+                    .permitAll()
+                    .requestMatchers("/images/**")
+                    .permitAll()
 
-                                    // Product Restrictions
-                                    .requestMatchers(HttpMethod.POST, "/api/products/**")
-                                    .hasAnyAuthority("ADMIN", "VENDOR")
-                                    .requestMatchers(HttpMethod.PUT, "/api/products/**")
-                                    .hasAnyAuthority("ADMIN", "VENDOR")
-                                    .requestMatchers(HttpMethod.DELETE, "/api/products/**")
-                                    .hasAuthority("ADMIN")
+                    // Product Restrictions
+                    .requestMatchers(HttpMethod.POST, "/api/products/**")
+                    .hasAnyAuthority("ADMIN", "VENDOR")
+                    .requestMatchers(HttpMethod.PUT, "/api/products/**")
+                    .hasAnyAuthority("ADMIN", "VENDOR")
+                    .requestMatchers(HttpMethod.DELETE, "/api/products/**")
+                    .hasAuthority("ADMIN")
 
-                                    // Role-based APIs
-                                    .requestMatchers("/api/admin/**")
-                                    .hasAuthority("ADMIN")
-                                    .requestMatchers("/api/vendor/**")
-                                    .hasAuthority("VENDOR")
+                    // Role-based APIs
+                    .requestMatchers("/api/admin/**")
+                    .hasAuthority("ADMIN")
+                    .requestMatchers("/api/vendor/**")
+                    .hasAuthority("VENDOR")
 
-                                    // Swagger
-                                    .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**")
-                                    .permitAll()
-                                    .anyRequest()
-                                    .authenticated())
-            .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
-            .sessionManagement(
-                    session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authenticationProvider(authenticationProvider())
-            .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                    // Swagger
+                    .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authenticationProvider(authenticationProvider())
+        .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }
@@ -112,12 +109,12 @@ public class SecurityConfig {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(
-            Arrays.asList(
-                    "http://localhost:3000", "http://192.168.0.3:3000"
-                    // Add your deployed frontend URL here when ready
+        Arrays.asList(
+            "http://localhost:3000", "http://192.168.0.3:3000"
+            // Add your deployed frontend URL here when ready
             ));
     configuration.setAllowedMethods(
-            Arrays.asList("GET", "PATCH", "POST", "PUT", "DELETE", "OPTIONS"));
+        Arrays.asList("GET", "PATCH", "POST", "PUT", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(Arrays.asList("*"));
     configuration.setExposedHeaders(Arrays.asList("Authorization"));
     configuration.setAllowCredentials(true);

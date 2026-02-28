@@ -2,9 +2,8 @@ package com.borneo.ecommerce.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import lombok.Data;
-
 import java.math.BigDecimal;
+import lombok.Data;
 
 @Data
 @Entity
@@ -15,9 +14,9 @@ public class OrderItem {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Schema(
-          description = "Unique identifier of the order item",
-          example = "501",
-          accessMode = Schema.AccessMode.READ_ONLY)
+      description = "Unique identifier of the order item",
+      example = "501",
+      accessMode = Schema.AccessMode.READ_ONLY)
   private Long id;
 
   @ManyToOne(optional = false)

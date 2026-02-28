@@ -18,9 +18,9 @@ public class EcommerceApplication {
 
   @Bean
   public CommandLineRunner demoData(
-          UserRepository userRepository,
-          PasswordEncoder passwordEncoder,
-          RoleRepository roleRepository) {
+      UserRepository userRepository,
+      PasswordEncoder passwordEncoder,
+      RoleRepository roleRepository) {
     return args -> {
       String[] roleNames = {"USER", "ADMIN", "VENDOR"};
 
