@@ -14,7 +14,10 @@ public class OrderItem {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Schema(description = "Unique identifier of the order item", example = "501", accessMode = Schema.AccessMode.READ_ONLY)
+  @Schema(
+          description = "Unique identifier of the order item",
+          example = "501",
+          accessMode = Schema.AccessMode.READ_ONLY)
   private Long id;
 
   @ManyToOne(optional = false)

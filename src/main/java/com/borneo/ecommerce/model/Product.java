@@ -17,23 +17,33 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "Unique identifier of the product", example = "42", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(
+            description = "Unique identifier of the product",
+            example = "42",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
     @Schema(description = "Name of the product", example = "Wireless Bluetooth Headphones")
     private String name;
 
     @Column(columnDefinition = "TEXT")
-    @Schema(description = "Detailed description of the product", example = "High-quality over-ear headphones with active noise cancellation and 30-hour battery life.")
+    @Schema(
+            description = "Detailed description of the product",
+            example =
+                    "High-quality over-ear headphones with active noise cancellation and 30-hour battery life.")
     private String description;
 
-    @Schema(description = "Price of the product in the smallest currency unit (e.g., cents/IDR)", example = "299000")
+    @Schema(
+            description = "Price of the product in the smallest currency unit (e.g., cents/IDR)",
+            example = "299000")
     private int price;
 
     @Schema(description = "Available stock quantity", example = "150")
     private int stock;
 
-    @Schema(description = "Relative or absolute path to the product image", example = "/images/products/headphones.png")
+    @Schema(
+            description = "Relative or absolute path to the product image",
+            example = "/images/products/headphones.png")
     private String imagePath;
 
     @ManyToOne(fetch = FetchType.LAZY)

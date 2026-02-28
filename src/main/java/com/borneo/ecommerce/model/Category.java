@@ -13,22 +13,34 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "categories")
-@Schema(description = "Represents a product category, which can have a parent category and subcategories")
+@Schema(
+        description =
+                "Represents a product category, which can have a parent category and subcategories")
 public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "Unique identifier of the category", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(
+            description = "Unique identifier of the category",
+            example = "1",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
     @Column(nullable = false, unique = true)
-    @Schema(description = "Unique name of the category", example = "Electronics", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+            description = "Unique name of the category",
+            example = "Electronics",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String name;
 
-    @Schema(description = "Relative or absolute path to the category thumbnail image", example = "/images/categories/electronics.png")
+    @Schema(
+            description = "Relative or absolute path to the category thumbnail image",
+            example = "/images/categories/electronics.png")
     private String imagePath;
 
-    @Schema(description = "Relative or absolute path to the category banner image", example = "/images/banners/electronics-banner.png")
+    @Schema(
+            description = "Relative or absolute path to the category banner image",
+            example = "/images/banners/electronics-banner.png")
     private String bannerPath;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -20,7 +20,10 @@ public class Wishlist {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Schema(description = "Unique identifier of the wishlist entry", example = "301", accessMode = Schema.AccessMode.READ_ONLY)
+  @Schema(
+          description = "Unique identifier of the wishlist entry",
+          example = "301",
+          accessMode = Schema.AccessMode.READ_ONLY)
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -34,6 +37,8 @@ public class Wishlist {
   private Product product;
 
   @Column(nullable = false)
-  @Schema(description = "Date and time when the product was added to the wishlist", example = "2024-06-15T10:30:00")
+  @Schema(
+          description = "Date and time when the product was added to the wishlist",
+          example = "2024-06-15T10:30:00")
   private LocalDateTime dateAdded;
 }
