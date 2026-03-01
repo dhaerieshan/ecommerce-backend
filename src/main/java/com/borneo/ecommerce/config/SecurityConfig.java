@@ -92,7 +92,7 @@ public class SecurityConfig {
                     .hasAuthority("VENDOR")
 
                     // Swagger
-                    .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**")
+                    .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**","/actuator/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
