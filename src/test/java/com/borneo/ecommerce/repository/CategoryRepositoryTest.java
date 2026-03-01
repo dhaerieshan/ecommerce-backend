@@ -4,15 +4,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.borneo.ecommerce.model.Category;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -25,7 +19,7 @@ class CategoryRepositoryTest {
 
   @Autowired private CategoryRepository categoryRepository;
 
-  @Autowired   private TestEntityManager entityManager;
+  @Autowired private TestEntityManager entityManager;
 
   @BeforeEach
   void setUp() {
@@ -46,7 +40,6 @@ class CategoryRepositoryTest {
     assertEquals("Books", saved.getName());
   }
 
-
   @Test
   @DisplayName("Should find category by name via stream filter")
   void testFindByName() {
@@ -56,10 +49,11 @@ class CategoryRepositoryTest {
     entityManager.persist(category);
     entityManager.flush();
 
-    Category found = categoryRepository.findAll().stream()
-        .filter(c -> "Electronics".equals(c.getName()))
-        .findFirst()
-        .orElse(null);
+    Category found =
+        categoryRepository.findAll().stream()
+            .filter(c -> "Electronics".equals(c.getName()))
+            .findFirst()
+            .orElse(null);
 
     assertNotNull(found);
     assertEquals("Electronics", found.getName());
@@ -100,9 +94,8 @@ class CategoryRepositoryTest {
     var categories = categoryRepository.findAll();
 
     assertNotNull(categories);
-   // assertEquals(2, categories.size());
+    // assertEquals(2, categories.size());
   }
-
 
   @Test
   @DisplayName("Should delete category successfully")

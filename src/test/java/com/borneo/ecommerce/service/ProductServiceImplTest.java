@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -141,8 +141,7 @@ class ProductServiceImplTest {
     when(productRepository.findById(999L)).thenReturn(Optional.empty());
 
     assertThrows(
-        ResourceNotFoundException.class,
-        () -> productService.updateProduct(999L, testProductDTO));
+        ResourceNotFoundException.class, () -> productService.updateProduct(999L, testProductDTO));
 
     verify(productRepository, times(1)).findById(999L);
   }
@@ -163,8 +162,7 @@ class ProductServiceImplTest {
   void testDeleteProductNotFound() {
     when(productRepository.findById(999L)).thenReturn(Optional.empty());
 
-    assertThrows(
-        ResourceNotFoundException.class, () -> productService.deleteProduct(999L));
+    assertThrows(ResourceNotFoundException.class, () -> productService.deleteProduct(999L));
 
     verify(productRepository, times(1)).findById(999L);
   }
@@ -218,4 +216,3 @@ class ProductServiceImplTest {
     verify(productRepository, times(1)).save(testProduct);
   }
 }
-

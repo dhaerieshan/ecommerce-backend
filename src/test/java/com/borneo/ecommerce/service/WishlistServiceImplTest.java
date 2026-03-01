@@ -45,11 +45,12 @@ class WishlistServiceImplTest {
     testProduct.setName("Laptop");
     testProduct.setPrice(100000);
 
-    testWishlist = Wishlist.builder()
-        .user(testUser)
-        .product(testProduct)
-        .dateAdded(LocalDateTime.now())
-        .build();
+    testWishlist =
+        Wishlist.builder()
+            .user(testUser)
+            .product(testProduct)
+            .dateAdded(LocalDateTime.now())
+            .build();
     testWishlist.setId(1L);
   }
 

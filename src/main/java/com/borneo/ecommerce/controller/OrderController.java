@@ -2,7 +2,6 @@ package com.borneo.ecommerce.controller;
 
 import com.borneo.ecommerce.dto.MessageResponse;
 import com.borneo.ecommerce.dto.OrderDTO;
-import com.borneo.ecommerce.dto.OrderItemDTO;
 import com.borneo.ecommerce.exception.ResourceNotFoundException;
 import com.borneo.ecommerce.model.Order;
 import com.borneo.ecommerce.model.OrderItem;

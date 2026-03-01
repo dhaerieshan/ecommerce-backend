@@ -3,12 +3,10 @@ package com.borneo.ecommerce.repository;
 import com.borneo.ecommerce.model.Category;
 import com.borneo.ecommerce.model.Product;
 import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {

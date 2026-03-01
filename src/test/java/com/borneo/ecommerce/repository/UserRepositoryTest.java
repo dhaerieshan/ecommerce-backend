@@ -1,7 +1,13 @@
 package com.borneo.ecommerce.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.borneo.ecommerce.model.Role;
 import com.borneo.ecommerce.model.User;
+import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,22 +15,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.List;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 @ActiveProfiles("test")
 @DataJpaTest
 class UserRepositoryTest {
 
-  @Autowired
-  private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
-  @Autowired
-  private TestEntityManager entityManager;
+  @Autowired private TestEntityManager entityManager;
 
   private Role adminRole;
   private Role userRole;
@@ -124,14 +121,13 @@ class UserRepositoryTest {
     entityManager.persist(user);
     entityManager.flush();
 
-    boolean exists = userRepository.existsByEmailAndUsernameNot(
-            "john@test.com", "otherUsername");
+    boolean exists = userRepository.existsByEmailAndUsernameNot("john@test.com", "otherUsername");
 
     assertThat(exists).isTrue();
   }
 
   @Test
-  void findByUserId(){
+  void findByUserId() {
     User user = new User();
     user.setUsername("john");
     user.setEmail("");

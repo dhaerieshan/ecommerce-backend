@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -55,30 +55,32 @@ class CategoryServiceImplTest {
     assertEquals("Electronics", result.getName());
     verify(categoryRepository, times(1)).save(any(Category.class));
   }
-@Test
-@DisplayName("Should get all categories successfully")
-void testGetAllCategories() {
-  List<Category> categories = new ArrayList<>();
-  categories.add(testCategory);
-  when(categoryRepository.findByParentIsNull()).thenReturn(categories);
-  List<CategoryDTO> result = categoryService.getAllCategories();
-  assertNotNull(result);
-  assertEquals(1, result.size());
-  assertEquals("Electronics", result.getFirst().getName());
-  verify(categoryRepository, times(1)).findByParentIsNull();
-}
 
-@Test
-@DisplayName("Should return empty list when no categories exist")
-void testGetAllCategoriesEmpty() {
-  when(categoryRepository.findByParentIsNull()).thenReturn(new ArrayList<>());
+  @Test
+  @DisplayName("Should get all categories successfully")
+  void testGetAllCategories() {
+    List<Category> categories = new ArrayList<>();
+    categories.add(testCategory);
+    when(categoryRepository.findByParentIsNull()).thenReturn(categories);
+    List<CategoryDTO> result = categoryService.getAllCategories();
+    assertNotNull(result);
+    assertEquals(1, result.size());
+    assertEquals("Electronics", result.getFirst().getName());
+    verify(categoryRepository, times(1)).findByParentIsNull();
+  }
 
-  List<CategoryDTO> result = categoryService.getAllCategories();
+  @Test
+  @DisplayName("Should return empty list when no categories exist")
+  void testGetAllCategoriesEmpty() {
+    when(categoryRepository.findByParentIsNull()).thenReturn(new ArrayList<>());
 
-  assertNotNull(result);
-  assertTrue(result.isEmpty());
-  verify(categoryRepository, times(1)).findByParentIsNull();
-}
+    List<CategoryDTO> result = categoryService.getAllCategories();
+
+    assertNotNull(result);
+    assertTrue(result.isEmpty());
+    verify(categoryRepository, times(1)).findByParentIsNull();
+  }
+
   @Test
   @DisplayName("Should get category by ID successfully")
   void testGetCategoryById() {
@@ -96,8 +98,7 @@ void testGetAllCategoriesEmpty() {
   void testGetCategoryByIdNotFound() {
     when(categoryRepository.findById(999L)).thenReturn(Optional.empty());
 
-    assertThrows(
-        ResourceNotFoundException.class, () -> categoryService.getCategoryById(999L));
+    assertThrows(ResourceNotFoundException.class, () -> categoryService.getCategoryById(999L));
 
     verify(categoryRepository, times(1)).findById(999L);
   }
@@ -145,10 +146,8 @@ void testGetAllCategoriesEmpty() {
   void testDeleteCategoryNotFound() {
     when(categoryRepository.findById(999L)).thenReturn(Optional.empty());
 
-    assertThrows(
-        ResourceNotFoundException.class, () -> categoryService.deleteCategory(999L));
+    assertThrows(ResourceNotFoundException.class, () -> categoryService.deleteCategory(999L));
 
     verify(categoryRepository, times(1)).findById(999L);
   }
 }
-

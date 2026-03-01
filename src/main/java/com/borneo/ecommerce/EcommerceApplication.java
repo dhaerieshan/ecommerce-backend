@@ -18,7 +18,7 @@ public class EcommerceApplication {
   }
 
   @Bean
-    @Profile("!test")
+  @Profile("!test")
   public CommandLineRunner demoData(
       UserRepository userRepository,
       PasswordEncoder passwordEncoder,

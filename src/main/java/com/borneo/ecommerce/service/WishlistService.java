@@ -9,7 +9,6 @@ import com.borneo.ecommerce.model.Wishlist;
 import com.borneo.ecommerce.repository.ProductRepository;
 import com.borneo.ecommerce.repository.WishlistRepository;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +65,4 @@ public class WishlistService {
             })
         .collect(Collectors.toSet());
   }
-
-
 }

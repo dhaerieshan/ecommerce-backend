@@ -7,8 +7,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
- * Test configuration for Spring Boot tests. This configuration is used specifically for testing
- * and provides beans that override the production configurations.
+ * Test configuration for Spring Boot tests. This configuration is used specifically for testing and
+ * provides beans that override the production configurations.
  */
 @TestConfiguration
 public class TestConfig {
@@ -25,4 +25,3 @@ public class TestConfig {
     return new BCryptPasswordEncoder(4); // Lower strength for faster tests
   }
 }
-
