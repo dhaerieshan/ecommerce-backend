@@ -177,6 +177,7 @@ public class AuthController {
   @PostMapping("/signin")
   public ResponseEntity<?> authenticateUser(
       @org.springframework.web.bind.annotation.RequestBody LoginRequest loginRequest) {
+
     Authentication authentication =
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(

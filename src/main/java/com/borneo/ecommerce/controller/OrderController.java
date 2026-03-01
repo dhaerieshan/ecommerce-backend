@@ -72,28 +72,9 @@ public class OrderController {
     if (user == null) throw new ResourceNotFoundException("User not found");
 
     Order order = orderService.createOrder(user, item);
-    order.setStatus("in progress");
+    order.setStatus("PENDING");
 
-    OrderDTO orderDTO = new OrderDTO();
-    orderDTO.setId(order.getId());
-    orderDTO.setOrderDate(order.getOrderDate());
-    orderDTO.setUserId(order.getUser().getId());
-    orderDTO.setTotalAmount(order.getTotalAmount());
-
-    List<OrderItemDTO> orderItemDTOs =
-        order.getOrderItems().stream()
-            .map(
-                items -> {
-                  OrderItemDTO dto = new OrderItemDTO();
-                  dto.setOrderId(items.getOrder().getId());
-                  dto.setProductId(items.getProductId());
-                  dto.setQuantity(items.getQuantity());
-                  dto.setPrice(items.getPrice());
-                  return dto;
-                })
-            .collect(Collectors.toList());
-
-    orderDTO.setItems(orderItemDTOs);
+    OrderDTO orderDTO = new OrderDTO(order);
     return ResponseEntity.ok(orderDTO);
   }
 

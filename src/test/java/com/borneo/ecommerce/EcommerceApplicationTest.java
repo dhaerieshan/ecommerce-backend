@@ -1,7 +1,6 @@
 package com.borneo.ecommerce;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -60,6 +59,7 @@ public class EcommerceApplicationTest {
     adminUser.setUsername("Admin");
     adminUser.setPassword(passwordEncoder.encode("admin"));
     adminUser.setEmail("admin@gmail.com");
+    adminUser.setAddress("address");
     Set<Role> adminRoles = new HashSet<>();
     adminRoles.add(adminRole);
     adminUser.setRoles(adminRoles);
@@ -69,6 +69,7 @@ public class EcommerceApplicationTest {
     user.setUsername("User");
     user.setPassword(passwordEncoder.encode("user"));
     user.setEmail("user@gmail.com");
+    user.setAddress("address");
     Set<Role> userRoles = new HashSet<>();
     userRoles.add(userRole);
     user.setRoles(userRoles);
@@ -97,10 +98,11 @@ public class EcommerceApplicationTest {
 
     UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
     userUpdateRequest.setUsername("User");
+    userUpdateRequest.setPassword("newUser");
 
     mockMvc
         .perform(
-            get("/api/user/update")
+            patch("/api/user/update")
                 .header("Authorization", "BEARER " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userUpdateRequest)))
@@ -128,14 +130,14 @@ public class EcommerceApplicationTest {
     token = objectMapper.readTree(responseContent).get("token").asText();
 
     mockMvc
-        .perform(get("/api/user/profile").header("Authorization", "BEARER " + token))
+        .perform(get("/api/user/me").header("Authorization", "BEARER " + token))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.username").value("User"))
         .andExpect(jsonPath("$.email").value("user@gmail.com"));
   }
 
   @Test
-  public void testAdminGetUsers() throws Exception {
+  public void testAdminGetAllUsers() throws Exception {
 
     LoginRequest loginRequest = new LoginRequest();
     loginRequest.setUsername("Admin");
@@ -155,9 +157,9 @@ public class EcommerceApplicationTest {
     token = objectMapper.readTree(responseContent).get("token").asText();
 
     mockMvc
-        .perform(get("/api/admin/userlist").header("Authorization", "BEARER " + token))
+        .perform(get("/api/admin/users").header("Authorization", "BEARER " + token))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.users").isArray())
+        .andExpect(jsonPath("$.content").isArray())
         .andReturn();
   }
 }
