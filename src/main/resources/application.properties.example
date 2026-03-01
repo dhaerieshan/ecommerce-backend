@@ -3,11 +3,6 @@ spring.application.name=ecommerce
 logging.level.root=INFO
 logging.level.com.borneo.ecommerce=DEBUG
 
-# Database
-spring.datasource.url=jdbc:postgresql://localhost:5432/ecommerce
-spring.datasource.username=your_db_username
-spring.datasource.password=your_db_password
-
 # JWT
 app.jwtSecret=your_jwt_secret_key_here
 
