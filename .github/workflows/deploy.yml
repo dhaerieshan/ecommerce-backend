@@ -13,6 +13,22 @@ jobs:
     name: Build & Test
     runs-on: ubuntu-latest
 
+    # Spin up a real PostgreSQL for integration tests
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: ecommerce
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,7 +40,16 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build with Maven
+      - name: Build and run tests
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/ecommerce
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: postgres
+          APP_JWT_SECRET: test-secret-key-for-github-actions-minimum-32-chars
+          ADMIN_SECRET_CODE: admin123
+          VENDOR_SECRET_CODE: vendor123
+          SPRING_MAIL_USERNAME: test@example.com
+          SPRING_MAIL_PASSWORD: test
         run: mvn clean package -B
 
       - name: Upload jar artifact
@@ -37,7 +62,7 @@ jobs:
   docker:
     name: Build Docker Image
     runs-on: ubuntu-latest
-    needs: build   # Only runs if build job passes
+    needs: build
 
     steps:
       - name: Checkout code
@@ -49,7 +74,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t ecommerce-backend:${{ github.sha }} .
-          echo "✅ Docker image built successfully"
+          echo " Docker image built successfully"
           echo "Image tag: ecommerce-backend:${{ github.sha }}"
 
       - name: Check image size
@@ -59,11 +84,11 @@ jobs:
   deploy:
     name: Deploy to Render
     runs-on: ubuntu-latest
-    needs: docker   # Only runs if docker job passes
+    needs: docker
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
       - name: Trigger Render Deploy
         run: |
           curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
-          echo "✅ Deployment triggered on Render"
+          echo " Deployment triggered on Render"
