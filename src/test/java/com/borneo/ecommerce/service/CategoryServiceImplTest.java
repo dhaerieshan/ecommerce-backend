@@ -31,7 +31,7 @@ class CategoryServiceImplTest {
   @BeforeEach
   void setUp() {
     @SuppressWarnings("resource")
-    AutoCloseable _ = MockitoAnnotations.openMocks(this);
+    AutoCloseable mocks = MockitoAnnotations.openMocks(this);
 
     testCategory = new Category();
     testCategory.setId(1L);
