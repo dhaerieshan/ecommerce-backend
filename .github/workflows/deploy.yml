@@ -13,22 +13,6 @@ jobs:
     name: Build & Test
     runs-on: ubuntu-latest
 
-    # Spin up a real PostgreSQL for integration tests
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_DB: ecommerce
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -42,9 +26,7 @@ jobs:
 
       - name: Build and run tests
         env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/ecommerce
-          SPRING_DATASOURCE_USERNAME: postgres
-          SPRING_DATASOURCE_PASSWORD: postgres
+          SPRING_PROFILES_ACTIVE: test
           APP_JWT_SECRET: test-secret-key-for-github-actions-minimum-32-chars
           ADMIN_SECRET_CODE: admin123
           VENDOR_SECRET_CODE: vendor123
