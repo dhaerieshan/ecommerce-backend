@@ -14,7 +14,7 @@ services:
       - key: SPRING_DATASOURCE_URL
         fromDatabase:
           name: ecommerce-db
-          property: connectionString
+          property: jdbcConnectionString
       - key: SPRING_DATASOURCE_USERNAME
         fromDatabase:
           name: ecommerce-db
